@@ -387,7 +387,7 @@ public:
    * @brief Get a mutable accessor to the faces-to-ElementRegion relation.
    * @return non-const reference to faces-to-ElementRegion relation
    */
-  arrayView2d< localIndex > const & elementRegionList() { return m_toElements.m_toElementRegion; }
+  array2d< localIndex > const & elementRegionList() { return m_toElements.m_toElementRegion; }
 
   /**
    * @brief Get an immutable accessor to the faces-to-ElementRegion relation.
@@ -399,7 +399,7 @@ public:
    * @brief Get a mutable accessor to the faces-to-ElementSubRegion relation.
    * @return non-const reference to faces-to-ElementSubRegion relation
    */
-  arrayView2d< localIndex > const & elementSubRegionList() { return m_toElements.m_toElementSubRegion; }
+  array2d< localIndex > const & elementSubRegionList() { return m_toElements.m_toElementSubRegion; }
 
   /**
    * @brief Get an immutable accessor to the faces-to-ElementSubRegion relation.
@@ -411,7 +411,7 @@ public:
    * @brief Get a mutable accessor to the faces-to-element-index relation.
    * @return non-const reference to faces-to-element-index relation
    */
-  arrayView2d< localIndex > const & elementList() { return m_toElements.m_toElementIndex; }
+  array2d< localIndex > const & elementList() { return m_toElements.m_toElementIndex; }
 
   /**
    * @brief Get an imutable accessor to the faces-to-element-index relation.

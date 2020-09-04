@@ -841,7 +841,7 @@ public:
    * @brief Get the locality information of the objects.
    * @return The information is stored as an array of integers, see #m_isExternal
    */
-  arrayView1d< integer > const & isExternal()
+  array1d< integer > const & isExternal()
   { return this->m_isExternal; }
 
   /**
@@ -855,7 +855,7 @@ public:
    * @brief Get the ghost information of each object.
    * @return See @see #m_ghostRank
    */
-  arrayView1d< integer > const & ghostRank()
+  array1d< integer > const & ghostRank()
   { return this->m_ghostRank; }
 
   /**

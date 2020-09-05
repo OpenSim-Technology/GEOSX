@@ -214,16 +214,16 @@ public:
   }
 
   /// Non-const/Mutable accessor for density.
-  arrayView2d< real64 >       const & getDensity()       { return m_density; }
+  arrayView2d< real64 > getDensity() { return m_density.toView(); }
 
   /// Const/non-mutable accessor for density
-  arrayView2d< real64 const > const & getDensity() const { return m_density; }
+  arrayView2d< real64 const > getDensity() const { return m_density.toViewConst(); }
 
   /// Non-const/mutable accessor for stress
-  arrayView3d< real64, solid::STRESS_USD >       const & getStress()       { return m_stress; }
+  arrayView3d< real64, solid::STRESS_USD > getStress() { return m_stress.toView(); }
 
   /// Const/non-mutable accessor for stress
-  arrayView3d< real64 const, solid::STRESS_USD > const & getStress() const { return m_stress; }
+  arrayView3d< real64 const, solid::STRESS_USD > getStress() const { return m_stress.toViewConst(); }
 
   ///@}
 

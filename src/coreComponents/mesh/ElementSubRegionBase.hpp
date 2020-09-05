@@ -173,21 +173,21 @@ public:
    * @brief Get the center of each element in this subregion.
    * @return an arrayView1d of const element centers
    */
-  arrayView2d< real64 const > const & getElementCenter() const
-  { return m_elementCenter; }
+  arrayView2d< real64 const > getElementCenter() const
+  { return m_elementCenter.toViewConst(); }
 
   /**
    * @copydoc getElementCenter() const
    */
-  arrayView2d< real64 > const & getElementCenter()
-  { return m_elementCenter; }
+  arrayView2d< real64 > getElementCenter()
+  { return m_elementCenter.toView(); }
 
   /**
    * @brief Get the volume of each element in this subregion.
    * @return an arrayView1d of const element volumes
    */
-  arrayView1d< real64 const > const & getElementVolume() const
-  { return m_elementVolume; }
+  arrayView1d< real64 const > getElementVolume() const
+  { return m_elementVolume.toViewConst(); }
 
   /**
    * @brief Get the group in which the constitutive models of this subregion are registered.

@@ -352,7 +352,7 @@ localIndex ObjectManagerBase::Unpack( buffer_unit_type const * & buffer,
       if( wrapperName != "nullptr" )
       {
         WrapperBase * const wrapper = this->getWrapperBase( wrapperName );
-        unpackedSize += wrapper->UnpackByIndex( buffer, packList, on_device );
+        unpackedSize += wrapper->UnpackByIndex( buffer, packList.toViewConst(), on_device );
       }
     }
   }
@@ -389,13 +389,13 @@ localIndex ObjectManagerBase::PackParentChildMapsPrivate( buffer_unit_type * & b
 
   if( this->hasExtrinsicData< extrinsicMeshData::ParentIndex >() )
   {
-    arrayView1d< localIndex const > const & parentIndex = this->getExtrinsicData< extrinsicMeshData::ParentIndex >();
+    arrayView1d< localIndex const > parentIndex = this->getExtrinsicData< extrinsicMeshData::ParentIndex >();
     packedSize += bufferOps::Pack< DOPACK >( buffer, string( extrinsicMeshData::ParentIndex::key ) );
     packedSize += bufferOps::Pack< DOPACK >( buffer,
                                              parentIndex,
                                              packList,
-                                             this->m_localToGlobalMap,
-                                             this->m_localToGlobalMap );
+                                             this->m_localToGlobalMap.toViewConst(),
+                                             this->m_localToGlobalMap.toViewConst() );
   }
 
   if( this->hasExtrinsicData< extrinsicMeshData::ChildIndex >() )
@@ -405,8 +405,8 @@ localIndex ObjectManagerBase::PackParentChildMapsPrivate( buffer_unit_type * & b
     packedSize += bufferOps::Pack< DOPACK >( buffer,
                                              childIndex,
                                              packList,
-                                             this->m_localToGlobalMap,
-                                             this->m_localToGlobalMap );
+                                             this->m_localToGlobalMap.toViewConst(),
+                                             this->m_localToGlobalMap.toViewConst() );
   }
 
   return packedSize;
@@ -475,7 +475,7 @@ localIndex ObjectManagerBase::PackSets( buffer_unit_type * & buffer,
                                              currentSet,
                                              packList,
                                              SortedArray< globalIndex >().toViewConst(),
-                                             m_localToGlobalMap );
+                                             m_localToGlobalMap.toSliceConst() );
   }
   return packedSize;
 }
@@ -515,7 +515,7 @@ localIndex ObjectManagerBase::UnpackSets( buffer_unit_type const * & buffer )
 }
 
 
-localIndex ObjectManagerBase::PackGlobalMapsSize( arrayView1d< localIndex > const & packList,
+localIndex ObjectManagerBase::PackGlobalMapsSize( arrayView1d< localIndex const > const & packList,
                                                   integer const recursive ) const
 {
   buffer_unit_type * junk = nullptr;
@@ -523,7 +523,7 @@ localIndex ObjectManagerBase::PackGlobalMapsSize( arrayView1d< localIndex > cons
 }
 
 localIndex ObjectManagerBase::PackGlobalMaps( buffer_unit_type * & buffer,
-                                              arrayView1d< localIndex > const & packList,
+                                              arrayView1d< localIndex const > const & packList,
                                               integer const recursive ) const
 {
   return PackGlobalMapsPrivate< true >( buffer, packList, recursive );
@@ -564,8 +564,8 @@ localIndex ObjectManagerBase::PackGlobalMapsPrivate( buffer_unit_type * & buffer
     packedSize += bufferOps::Pack< DOPACK >( buffer,
                                              parentIndex,
                                              packList,
-                                             this->m_localToGlobalMap,
-                                             this->m_localToGlobalMap );
+                                             this->m_localToGlobalMap.toViewConst(),
+                                             this->m_localToGlobalMap.toViewConst() );
   }
 
 
@@ -825,7 +825,7 @@ integer ObjectManagerBase::SplitObject( localIndex const indexToSplit,
 
 void ObjectManagerBase::inheritGhostRankFromParent( std::set< localIndex > const & indices )
 {
-  arrayView1d< localIndex const > const & parentIndex = this->getExtrinsicData< extrinsicMeshData::ParentIndex >();
+  arrayView1d< localIndex const > parentIndex = this->getExtrinsicData< extrinsicMeshData::ParentIndex >().toViewConst();
 
   for( auto const a : indices )
   {
@@ -1026,7 +1026,7 @@ void ObjectManagerBase::CleanUpMap( std::set< localIndex > const & targetIndices
 
 void ObjectManagerBase::enforceStateFieldConsistencyPostTopologyChange( std::set< localIndex > const & targetIndices )
 {
-  arrayView1d< localIndex const > const & childFaceIndices = getExtrinsicData< extrinsicMeshData::ChildIndex >();
+  arrayView1d< localIndex const > childFaceIndices = getExtrinsicData< extrinsicMeshData::ChildIndex >().toViewConst();
 
   for( localIndex const targetIndex : targetIndices )
   {

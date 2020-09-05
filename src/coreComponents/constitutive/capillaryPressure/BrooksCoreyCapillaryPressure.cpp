@@ -110,13 +110,13 @@ void BrooksCoreyCapillaryPressure::PostProcessInput()
 
 BrooksCoreyCapillaryPressure::KernelWrapper BrooksCoreyCapillaryPressure::createKernelWrapper()
 {
-  return KernelWrapper( m_phaseMinVolumeFraction,
-                        m_phaseCapPressureExponentInv,
-                        m_phaseEntryPressure,
+  return KernelWrapper( m_phaseMinVolumeFraction.toViewConst(),
+                        m_phaseCapPressureExponentInv.toViewConst(),
+                        m_phaseEntryPressure.toViewConst(),
                         m_capPressureEpsilon,
                         m_volFracScale,
-                        m_phaseTypes,
-                        m_phaseOrder,
+                        m_phaseTypes.toViewConst(),
+                        m_phaseOrder.toViewConst(),
                         m_phaseCapPressure,
                         m_dPhaseCapPressure_dPhaseVolFrac );
 }

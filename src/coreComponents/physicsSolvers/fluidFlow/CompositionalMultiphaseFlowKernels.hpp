@@ -408,7 +408,7 @@ struct FluxKernel
    * by calling .toView() or .toViewConst() on an accessor instance
    */
   template< typename VIEWTYPE >
-  using ElementView = typename ElementRegionManager::ElementViewAccessor< VIEWTYPE >::ViewTypeConst;
+  using ElementView = LvArray::typeManipulation::NestedViewTypeConst < VIEWTYPE >;
 
   template< localIndex NC, localIndex NUM_ELEMS, localIndex MAX_STENCIL >
   GEOSX_HOST_DEVICE

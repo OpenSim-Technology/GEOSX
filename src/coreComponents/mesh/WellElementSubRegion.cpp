@@ -900,8 +900,8 @@ localIndex WellElementSubRegion::PackUpDownMapsPrivate( buffer_unit_type * & buf
                                            nodeList().Base().toViewConst(),
                                            m_unmappedGlobalIndicesInNodelist,
                                            packList,
-                                           this->localToGlobalMap(),
-                                           nodeList().RelatedObjectLocalToGlobal() );
+                                           this->localToGlobalMap().toSliceConst(),
+                                           nodeList().RelatedObjectLocalToGlobal().toSliceConst() );
 
   return packedSize;
 }

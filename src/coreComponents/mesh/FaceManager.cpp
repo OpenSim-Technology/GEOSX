@@ -224,7 +224,7 @@ void createFacesByLowestNode( ElementRegionManager const & elementManager,
           for( localIndex elementLocalFaceIndex = 0; elementLocalFaceIndex < numFacesPerElement; ++elementLocalFaceIndex )
           {
             subRegion.GetFaceNodes( k, elementLocalFaceIndex, tempNodeList );
-            findSmallestThreeValues( tempNodeList, lowestNodes );
+            findSmallestThreeValues( tempNodeList.toViewConst(), lowestNodes );
 
             facesByLowestNode.emplaceBackAtomic< parallelHostAtomic >( lowestNodes[0],
                                                                        lowestNodes[1],
@@ -557,14 +557,14 @@ void FaceManager::BuildFaces( NodeManager * const nodeManager, ElementRegionMana
 
   resizeFaceToNodeMap( *elementManager,
                        facesByLowestNode.toViewConst(),
-                       uniqueFaceOffsets,
+                       uniqueFaceOffsets.toViewConst(),
                        nodeList() );
 
   resize( numFaces );
 
   populateMaps( *elementManager,
                 facesByLowestNode.toViewConst(),
-                uniqueFaceOffsets,
+                uniqueFaceOffsets.toViewConst(),
                 m_toElements.m_toElementRegion,
                 m_toElements.m_toElementSubRegion,
                 m_toElements.m_toElementIndex,
@@ -622,7 +622,7 @@ void FaceManager::SetDomainBoundaryObjects( NodeManager * const nodeManager )
   integer_array & faceDomainBoundaryIndicator = this->getReference< integer_array >( viewKeys.domainBoundaryIndicator );
   faceDomainBoundaryIndicator.setValues< serialPolicy >( 0 );
 
-  arrayView2d< localIndex const > const & elemRegionList = this->elementRegionList();
+  arrayView2d< localIndex const > const elemRegionList = this->elementRegionList().toViewConst();
 
   forAll< parallelHostPolicy >( size(), [&]( localIndex const kf )
   {
@@ -635,7 +635,7 @@ void FaceManager::SetDomainBoundaryObjects( NodeManager * const nodeManager )
   integer_array & nodeDomainBoundaryIndicator = nodeManager->getReference< integer_array >( nodeManager->viewKeys.domainBoundaryIndicator );
   nodeDomainBoundaryIndicator.setValues< serialPolicy >( 0 );
 
-  ArrayOfArraysView< localIndex const > const & faceToNodesMap = this->nodeList().toViewConst();
+  ArrayOfArraysView< localIndex const > const faceToNodesMap = this->nodeList().toViewConst();
 
   forAll< parallelHostPolicy >( size(), [&]( localIndex const k )
   {
@@ -684,9 +684,9 @@ void FaceManager::SortAllFaceNodes( NodeManager const * const nodeManager,
 {
   GEOSX_MARK_FUNCTION;
 
-  arrayView2d< localIndex const > const & elemRegionList = elementRegionList();
-  arrayView2d< localIndex const > const & elemSubRegionList = elementSubRegionList();
-  arrayView2d< localIndex const > const & elemList = elementList();
+  arrayView2d< localIndex const > const elemRegionList = elementRegionList().toViewConst();
+  arrayView2d< localIndex const > const elemSubRegionList = elementSubRegionList().toViewConst();
+  arrayView2d< localIndex const > const elemList = elementList().toViewConst();
   arrayView2d< real64 const, nodes::REFERENCE_POSITION_USD > const & X = nodeManager->referencePosition();
 
   const indexType max_face_nodes = getMaxFaceNodes();
@@ -803,8 +803,8 @@ void FaceManager::ExtractMapFromObjectForAssignGlobalIndexNumbers( ObjectManager
 
   localIndex const numFaces = size();
 
-  ArrayOfArraysView< localIndex const > const & faceToNodeMap = this->nodeList().toViewConst();
-  arrayView1d< integer const > const & isDomainBoundary = this->getReference< integer_array >( viewKeys.domainBoundaryIndicator );
+  ArrayOfArraysView< localIndex const > const faceToNodeMap = this->nodeList().toViewConst();
+  arrayView1d< integer const > const isDomainBoundary = this->getReference< integer_array >( viewKeys.domainBoundaryIndicator ).toViewConst();
 
   globalFaceNodes.resize( numFaces );
 
@@ -930,7 +930,7 @@ localIndex FaceManager::UnpackUpDownMaps( buffer_unit_type const * & buffer,
 
   unPackedSize += bufferOps::Unpack( buffer,
                                      m_toElements,
-                                     packList,
+                                     packList.toViewConst(),
                                      m_toElements.getElementRegionManager(),
                                      overwriteUpMaps );
 
@@ -959,7 +959,7 @@ void FaceManager::compressRelationMaps()
 
 void FaceManager::enforceStateFieldConsistencyPostTopologyChange( std::set< localIndex > const & targetIndices )
 {
-  arrayView1d< localIndex const > const & childFaceIndices = getExtrinsicData< extrinsicMeshData::ChildIndex >();
+  arrayView1d< localIndex const > const childFaceIndices = getExtrinsicData< extrinsicMeshData::ChildIndex >().toViewConst();
 
   ObjectManagerBase::enforceStateFieldConsistencyPostTopologyChange ( targetIndices );
 

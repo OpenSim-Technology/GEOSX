@@ -142,7 +142,7 @@ void PerforationData::GetReservoirElementDimensions( MeshLevel const & mesh,
   // compute the bounding box of the element
   real64 boxDims[ 3 ];
   computationalGeometry::GetBoundingBox( ei,
-                                         subRegion->nodeList(),
+                                         subRegion->nodeList().toViewConst(),
                                          nodeManager->referencePosition(),
                                          boxDims );
 

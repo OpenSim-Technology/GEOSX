@@ -145,14 +145,14 @@ void VanGenuchtenBakerRelativePermeability::PostProcessInput()
 
 VanGenuchtenBakerRelativePermeability::KernelWrapper VanGenuchtenBakerRelativePermeability::createKernelWrapper()
 {
-  return KernelWrapper( m_phaseMinVolumeFraction,
-                        m_waterOilRelPermExponentInv,
-                        m_waterOilRelPermMaxValue,
-                        m_gasOilRelPermExponentInv,
-                        m_gasOilRelPermMaxValue,
+  return KernelWrapper( m_phaseMinVolumeFraction.toViewConst(),
+                        m_waterOilRelPermExponentInv.toViewConst(),
+                        m_waterOilRelPermMaxValue.toViewConst(),
+                        m_gasOilRelPermExponentInv.toViewConst(),
+                        m_gasOilRelPermMaxValue.toViewConst(),
                         m_volFracScale,
-                        m_phaseTypes,
-                        m_phaseOrder,
+                        m_phaseTypes.toViewConst(),
+                        m_phaseOrder.toViewConst(),
                         m_phaseRelPerm,
                         m_dPhaseRelPerm_dPhaseVolFrac );
 }

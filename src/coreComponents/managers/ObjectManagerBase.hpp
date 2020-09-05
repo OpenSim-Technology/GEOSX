@@ -125,7 +125,7 @@ public:
    * @param recursive Boolean like integer for sub-groups packing.
    * @return The packed size.
    */
-  virtual localIndex PackGlobalMapsSize( arrayView1d< localIndex > const & packList,
+  virtual localIndex PackGlobalMapsSize( arrayView1d< localIndex const > const & packList,
                                          integer const recursive ) const;
 
   /**
@@ -136,7 +136,7 @@ public:
    * @return The packed size.
    */
   virtual localIndex PackGlobalMaps( buffer_unit_type * & buffer,
-                                     arrayView1d< localIndex > const & packList,
+                                     arrayView1d< localIndex const > const & packList,
                                      integer const recursive ) const;
 
   /**
@@ -375,7 +375,7 @@ public:
    */
   void SetGhostRankForSenders( int const neighborRank )
   {
-    arrayView1d< localIndex const > const & ghostsToSend = getNeighborData( neighborRank ).ghostsToSend();
+    arrayView1d< localIndex const > const & ghostsToSend = getNeighborData( neighborRank ).ghostsToSend().toViewConst();
     array1d< std::pair< globalIndex, int > > & nonLocalGhosts = getNeighborData( neighborRank ).nonLocalGhosts();
     nonLocalGhosts.clear();
 
@@ -812,15 +812,15 @@ public:
    * @brief Get local to global map.
    * @return The mapping relationship as a array.
    */
-  arrayView1d< globalIndex > const & localToGlobalMap()
-  { return m_localToGlobalMap; }
+  arrayView1d< globalIndex > localToGlobalMap()
+  { return m_localToGlobalMap.toView(); }
 
   /**
    * @brief Get local to global map, const version.
    * @return The mapping relationship as a array.
    */
-  arrayView1d< globalIndex const > const & localToGlobalMap() const
-  { return m_localToGlobalMap; }
+  arrayView1d< globalIndex const > localToGlobalMap() const
+  { return m_localToGlobalMap.toViewConst(); }
 
   /**
    * @brief Get global to local map.
@@ -848,8 +848,8 @@ public:
    * @brief Get the locality information of the objects.
    * @return The information is stored as an array of integers, see #m_isExternal
    */
-  arrayView1d< integer const > const & isExternal() const
-  { return this->m_isExternal; }
+  arrayView1d< integer const > isExternal() const
+  { return this->m_isExternal.toViewConst(); }
 
   /**
    * @brief Get the ghost information of each object.
@@ -862,8 +862,8 @@ public:
    * @brief Get the ghost information of each object, const version.
    * @return See @see #m_ghostRank
    */
-  arrayView1d< integer const > const & ghostRank() const
-  { return this->m_ghostRank; }
+  arrayView1d< integer const > ghostRank() const
+  { return this->m_ghostRank.toViewConst(); }
 
   /**
    * @brief Get neighbor data for given @p rank.

@@ -100,12 +100,12 @@ void BrooksCoreyRelativePermeability::PostProcessInput()
 
 BrooksCoreyRelativePermeability::KernelWrapper BrooksCoreyRelativePermeability::createKernelWrapper()
 {
-  return KernelWrapper( m_phaseMinVolumeFraction,
-                        m_phaseRelPermExponent,
-                        m_phaseRelPermMaxValue,
+  return KernelWrapper( m_phaseMinVolumeFraction.toViewConst(),
+                        m_phaseRelPermExponent.toViewConst(),
+                        m_phaseRelPermMaxValue.toViewConst(),
                         m_volFracScale,
-                        m_phaseTypes,
-                        m_phaseOrder,
+                        m_phaseTypes.toViewConst(),
+                        m_phaseOrder.toViewConst(),
                         m_phaseRelPerm,
                         m_dPhaseRelPerm_dPhaseVolFrac );
 }

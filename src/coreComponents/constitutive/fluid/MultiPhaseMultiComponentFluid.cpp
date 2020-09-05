@@ -324,7 +324,7 @@ void MultiPhaseMultiComponentFluidUpdate::Compute( real64 pressure,
 
   //phaseFractionTemp and phaseCompFractionTemp all are mole fraction,
   //w.r.t mole fraction or mass fraction (useMass)
-  m_flashModel->Partition( P, T, C, phaseFractionTemp, phaseCompFractionTemp );
+  m_flashModel->Partition( P, T, C.toSliceConst(), phaseFractionTemp.toSlice(), phaseCompFractionTemp.toSlice() );
 
   stackArray1d< EvalVarArgs, maxNumPhase > phaseDensityTemp( NP );
   stackArray1d< EvalVarArgs, maxNumPhase > phaseViscosityTemp( NP );

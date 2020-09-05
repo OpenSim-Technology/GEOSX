@@ -48,7 +48,7 @@ void CellElementSubRegion::CopyFromCellBlock( CellBlock * source )
   this->resize( source->size());
   this->nodeList() = source->nodeList();
 
-  arrayView1d< globalIndex const > const & sourceLocalToGlobal = source->localToGlobalMap();
+  arrayView1d< globalIndex const > const sourceLocalToGlobal = source->localToGlobalMap().toViewConst();
   this->m_localToGlobalMap.resize( sourceLocalToGlobal.size() );
   for( localIndex i = 0; i < localToGlobalMap().size(); ++i )
   {
@@ -116,15 +116,15 @@ localIndex CellElementSubRegion::PackUpDownMapsPrivate( buffer_unit_type * & buf
                                            nodeList().Base().toViewConst(),
                                            m_unmappedGlobalIndicesInNodelist,
                                            packList,
-                                           this->localToGlobalMap(),
-                                           nodeList().RelatedObjectLocalToGlobal() );
+                                           this->localToGlobalMap().toSliceConst(),
+                                           nodeList().RelatedObjectLocalToGlobal().toSliceConst() );
 
   packedSize += bufferOps::Pack< DOPACK >( buffer,
                                            faceList().Base().toViewConst(),
                                            m_unmappedGlobalIndicesInFacelist,
                                            packList,
-                                           this->localToGlobalMap(),
-                                           faceList().RelatedObjectLocalToGlobal() );
+                                           this->localToGlobalMap().toSliceConst(),
+                                           faceList().RelatedObjectLocalToGlobal().toSliceConst() );
 
   return packedSize;
 }

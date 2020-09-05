@@ -1245,7 +1245,7 @@ Pack( buffer_unit_type * & buffer,
                                              var[li],
                                              unmappedGI.data(),
                                              var.sizeOfArray( li ),
-                                             relatedObjectLocalToGlobalMap );
+                                             relatedObjectLocalToGlobalMap.toSliceConst() );
   }
 
   return sizeOfPackedChars;
@@ -1280,7 +1280,7 @@ Pack( buffer_unit_type * & buffer,
                                              var[li],
                                              unmappedGI.data(),
                                              var.sizeOfArray( li ),
-                                             relatedObjectLocalToGlobalMap );
+                                             relatedObjectLocalToGlobalMap.toSliceConst() );
   }
 
   return sizeOfPackedChars;

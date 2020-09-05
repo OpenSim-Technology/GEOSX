@@ -983,7 +983,7 @@ public:
    * @param packList list of indices to pack
    * @return the size of data packed.
    */
-  int PackUpDownMapsSize( ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
+  // int PackUpDownMapsSize( ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
 
   /**
    * @brief Pack element-to-node and element-to-face maps.
@@ -1000,8 +1000,8 @@ public:
    * @param packList list of indices to pack
    * @return the size of data packed.
    */
-  int PackUpDownMaps( buffer_unit_type * & buffer,
-                      ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
+  // int PackUpDownMaps( buffer_unit_type * & buffer,
+  //                     ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
 
   /**
    * @brief Unpack element-to-node and element-to-face maps.
@@ -1135,7 +1135,7 @@ ElementRegionManager::
 
       if( group->hasWrapper( viewName ) && group->getWrapperBase( viewName )->get_typeid() == typeid( VIEWTYPE ) )
       {
-        viewAccessor[kReg][kSubReg] = group->getReference< VIEWTYPE >( viewName );
+        viewAccessor[kReg][kSubReg] = group->getWrapper< VIEWTYPE >( viewName )->referenceAsView();
       }
     }
   }

@@ -356,28 +356,28 @@ public:
    * @return A const reference to arrayView1d<real64> containing the bulk
    *         modulus (at every element).
    */
-  arrayView1d< real64 > const & bulkModulus()       { return m_bulkModulus; }
+  arrayView1d< real64 > bulkModulus() { return m_bulkModulus.toView(); }
 
   /**
    * @brief Const accessor for bulk modulus
    * @return A const reference to arrayView1d<real64 const> containing the bulk
    *         modulus (at every element).
    */
-  arrayView1d< real64 const > const & bulkModulus() const { return m_bulkModulus; }
+  arrayView1d< real64 const > bulkModulus() const { return m_bulkModulus.toViewConst(); }
 
   /**
    * @brief Accessor for shear modulus
    * @return A const reference to arrayView1d<real64> containing the shear
    *         modulus (at every element).
    */
-  arrayView1d< real64 > const & shearModulus()       { return m_shearModulus; }
+  arrayView1d< real64 > shearModulus() { return m_shearModulus.toView(); }
 
   /**
    * @brief Const accessor for shear modulus
    * @return A const reference to arrayView1d<real64 const> containing the
    *         shear modulus (at every element).
    */
-  arrayView1d< real64 const > const & shearModulus() const { return m_shearModulus; }
+  arrayView1d< real64 const > shearModulus() const { return m_shearModulus.toViewConst(); }
 
   /**
    * @brief Create a instantiation of the LinearElasticIsotropicUpdate class
@@ -388,13 +388,13 @@ public:
   {
     if( includeState )
     {
-      return LinearElasticIsotropicUpdates( m_bulkModulus, m_shearModulus, m_stress );
+      return LinearElasticIsotropicUpdates( m_bulkModulus.toViewConst(), m_shearModulus.toViewConst(), m_stress );
     }
     else
     {
-      return LinearElasticIsotropicUpdates( m_bulkModulus,
-                                            m_shearModulus,
-                                            typename decltype(m_stress)::ViewType{} );
+      return LinearElasticIsotropicUpdates( m_bulkModulus.toViewConst(),
+                                            m_shearModulus.toViewConst(),
+                                            decltype( m_stress.toView() ) {} );
     }
   }
 

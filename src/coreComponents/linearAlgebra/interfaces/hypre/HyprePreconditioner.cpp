@@ -224,8 +224,8 @@ void HyprePreconditioner::createMGR( DofManager const * const dofManager )
   array1d< localIndex > numLocalDofsPerField = dofManager->numLocalDofsPerField();
 
   m_auxData = std::unique_ptr< HyprePrecAuxData >( new HyprePrecAuxData() );
-  m_auxData->point_marker_array = computeLocalDofComponentLabels( numComponentsPerField,
-                                                                  numLocalDofsPerField );
+  m_auxData->point_marker_array = computeLocalDofComponentLabels( numComponentsPerField.toSliceConst(),
+                                                                  numLocalDofsPerField.toSliceConst() );
 
   if( m_parameters.logLevel >= 1 )
   {
@@ -237,8 +237,8 @@ void HyprePreconditioner::createMGR( DofManager const * const dofManager )
   }
   if( m_parameters.logLevel >= 3 )
   {
-    GEOSX_LOG_RANK_VAR( computeLocalDofComponentLabels( numComponentsPerField,
-                                                        numLocalDofsPerField ) );
+    GEOSX_LOG_RANK_VAR( computeLocalDofComponentLabels( numComponentsPerField.toSliceConst(),
+                                                        numLocalDofsPerField.toSliceConst() ) );
   }
 
   HYPRE_Int mgr_bsize;

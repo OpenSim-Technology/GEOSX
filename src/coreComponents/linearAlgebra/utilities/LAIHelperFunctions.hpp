@@ -139,7 +139,7 @@ void SeparateComponentFilter( MATRIX const & src,
     srcIndices.resize( rowLength );
     srcValues.resize( rowLength );
 
-    src.getRowCopy( row, srcIndices, srcValues );
+    src.getRowCopy( row, srcIndices.toSlice(), srcValues.toSlice() );
 
     localIndex k=0;
     for( localIndex col=0; col<rowLength; ++col )

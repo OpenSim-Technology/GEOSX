@@ -299,7 +299,7 @@ void DofManager::removeIndexArray( FieldDescription const & field )
 void DofManager::addField( string const & fieldName,
                            Location const location )
 {
-  addField( fieldName, location, 1, array1d< string >() );
+  addField( fieldName, location, 1, arrayView1d< string const >() );
 }
 
 // Just another interface to allow four parameters (no regions)
@@ -307,7 +307,7 @@ void DofManager::addField( string const & fieldName,
                            Location const location,
                            localIndex const components )
 {
-  addField( fieldName, location, components, array1d< string >() );
+  addField( fieldName, location, components, arrayView1d< string const >() );
 }
 
 // Just another interface to allow four parameters (no components)
@@ -545,7 +545,7 @@ void DofManager::setSparsityPatternFromStencil( MATRIX & pattern,
   localIndex const NC = field.numComponents;
 
   ElementRegionManager::ElementViewAccessor< arrayView1d< globalIndex const > > dofNumber =
-    m_mesh->getElemManager()->ConstructViewAccessor< array1d< globalIndex >, arrayView1d< globalIndex const > >( field.key );
+    const_cast< MeshLevel const * >( m_mesh )->getElemManager()->ConstructViewAccessor< array1d< globalIndex >, arrayView1d< globalIndex const > >( field.key );
 
   array1d< globalIndex > rowIndices( NC );
   array1d< globalIndex > colIndices( NC );
@@ -561,7 +561,7 @@ void DofManager::setSparsityPatternFromStencil( MATRIX & pattern,
     {
       rowIndices[c] = dofNumber[elemIdx[0]][elemIdx[1]][elemIdx[2]] + c;
     }
-    pattern.insert( rowIndices, rowIndices, values );
+    pattern.insert( rowIndices.toSliceConst(), rowIndices.toSliceConst(), values.toSliceConst() );
   } );
 
   // 2. Assemble diagonal and off-diagonal blocks for elements in stencil
@@ -606,7 +606,7 @@ void DofManager::setSparsityPatternFromStencil( MATRIX & pattern,
       values.resize( numFluxElems * NC, stencilSize * NC );
       values.setValues< serialPolicy >( 1.0 );
 
-      pattern_ptr->insert( rowIndices, colIndices, values );
+      pattern_ptr->insert( rowIndices.toSliceConst(), colIndices.toSliceConst(), values.toSliceConst() );
     } );
   } );
 }
@@ -695,7 +695,7 @@ void DofManager::setSparsityPatternOneBlock( MATRIX & pattern,
 
     values.resize( numDofRow, numDofCol );
     values.setValues< serialPolicy >( 1.0 );
-    pattern.insert( dofIndicesRow, dofIndicesCol, values );
+    pattern.insert( dofIndicesRow.toSliceConst(), dofIndicesCol.toSliceConst(), values.toSliceConst() );
   }
 }
 
@@ -746,7 +746,7 @@ void DofManager::setSparsityPatternFromStencil( SparsityPattern< globalIndex > &
   globalIndex const rankDofOffset = rankOffset();
 
   ElementRegionManager::ElementViewAccessor< arrayView1d< globalIndex const > > dofNumber =
-    m_mesh->getElemManager()->ConstructViewAccessor< array1d< globalIndex >, arrayView1d< globalIndex const > >( field.key );
+    const_cast< MeshLevel const * >( m_mesh )->getElemManager()->ConstructViewAccessor< array1d< globalIndex >, arrayView1d< globalIndex const > >( field.key );
 
   array1d< globalIndex > rowDofIndices( NC );
   array1d< globalIndex > colDofIndices( NC );
@@ -878,7 +878,7 @@ void DofManager::setFiniteElementSparsityPattern( SparsityPattern< globalIndex >
     } );
   } );
 
-  arrayView1d< arrayView1d< arrayView2d< localIndex const, cells::NODE_MAP_USD > const > const > const & elemsToNodes = elemsToNodesArray.toViewConst();
+  arrayView1d< arrayView1d< arrayView2d< localIndex const, cells::NODE_MAP_USD > const > const > const & elemsToNodes = elemsToNodesArray.toNestedViewConst();
   ArrayOfArraysView< localIndex const > const & nodesToRegions = nodeManager.elementRegionList();
   ArrayOfArraysView< localIndex const > const & nodesToSubRegions = nodeManager.elementSubRegionList();
   ArrayOfArraysView< localIndex const > const & nodesToElems = nodeManager.elementList();
@@ -1094,7 +1094,7 @@ void DofManager::countRowLengthsFromStencil( arrayView1d< localIndex > const & r
   globalIndex const rankDofOffset = rankOffset();
 
   ElementRegionManager::ElementViewAccessor< arrayView1d< globalIndex const > > dofNumber =
-    m_mesh->getElemManager()->ConstructViewAccessor< array1d< globalIndex >, arrayView1d< globalIndex const > >( field.key );
+    const_cast< MeshLevel const * >( m_mesh )->getElemManager()->ConstructViewAccessor< array1d< globalIndex >, arrayView1d< globalIndex const > >( field.key );
 
   array1d< globalIndex > rowDofIndices( NC );
   array1d< globalIndex > colDofIndices( NC );
@@ -1299,8 +1299,8 @@ void vectorToFieldImpl( LOCAL_VECTOR const localVector,
                         localIndex const loComp,
                         localIndex const hiComp )
 {
-  arrayView1d< globalIndex const > const & dofNumber = manager.getReference< array1d< globalIndex > >( dofKey );
-  arrayView1d< integer const > const & ghostRank = manager.ghostRank();
+  arrayView1d< globalIndex const > const & dofNumber = manager.getReference< array1d< globalIndex > >( dofKey ).toViewConst();
+  arrayView1d< integer const > const & ghostRank = manager.ghostRank().toViewConst();
 
   WrapperBase * const wrapper = manager.getWrapperBase( fieldName );
   GEOSX_ASSERT( wrapper != nullptr );

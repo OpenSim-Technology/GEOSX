@@ -687,7 +687,7 @@ map< std::pair< string, string >, localIndex > ProblemManager::calculateRegionQu
           MeshLevel * const meshLevel = meshBody->GetGroup< MeshLevel >( b );
           NodeManager * const nodeManager = meshLevel->getNodeManager();
           ElementRegionManager * const elemManager = meshLevel->getElemManager();
-          arrayView2d< real64 const, nodes::REFERENCE_POSITION_USD > const & X = nodeManager->referencePosition();
+          arrayView2d< real64 const, nodes::REFERENCE_POSITION_USD > const X = nodeManager->referencePosition().toViewConst();
 
           for( auto const & regionName : targetRegions )
           {

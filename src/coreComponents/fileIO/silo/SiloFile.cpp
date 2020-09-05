@@ -1292,7 +1292,7 @@ void SiloFile::WriteElementRegionSilo( ElementRegionBase const & elemRegion,
           typedef decltype( array ) arrayType;
           Wrapper< arrayType > const &
           sourceWrapper = Wrapper< arrayType >::cast( *wrapper );
-          typename arrayType::ViewTypeConst const & sourceArray = sourceWrapper.reference();
+          auto const sourceArray = sourceWrapper.reference().toViewConst();
 
           Wrapper< arrayType > * const
           newWrapper = fakeGroup.registerWrapper< arrayType >( fieldName );
@@ -1329,7 +1329,7 @@ void SiloFile::WriteElementRegionSilo( ElementRegionBase const & elemRegion,
         {
           Wrapper< arrayType > const &
           sourceWrapper = Wrapper< arrayType >::cast( *(viewPointers[esr][fieldName]));
-          typename arrayType::ViewTypeConst const & sourceArray = sourceWrapper.reference();
+          auto const sourceArray = sourceWrapper.reference().toViewConst();
 
           localIndex const offset = counter * targetArray.strides()[ 0 ];
           GEOSX_ERROR_IF_GT( sourceArray.size(), targetArray.size() - offset );
@@ -1418,7 +1418,7 @@ void SiloFile::WriteElementMesh( ElementRegionBase const & elementRegion,
       typename TYPEOFREF( elementSubRegion ) ::NodeMapType const & elemsToNodes = elementSubRegion.nodeList();
 
       // TODO HACK. this isn't correct for variable relations.
-      elementToNodeMap[count].resize( elemsToNodes.size( 0 ), elementSubRegion.numNodesPerElement( 0 ) );
+      elementToNodeMap[count].resize( elementSubRegion.size(), elementSubRegion.numNodesPerElement( 0 ) );
 
       arrayView1d< integer const > const & elemGhostRank = elementSubRegion.ghostRank();
 
@@ -2920,7 +2920,7 @@ void SiloFile::WriteMaterialDataField3d( string const & meshName,
         fieldCopy[esr][matIndex].resize( fieldData.size( 0 ), fieldData.size( 1 ) );
         nvar = std::max( nvar, fieldData.size( 2 ) );
       }
-      fieldView[esr][matIndex] = fieldCopy[esr][matIndex];
+      fieldView[esr][matIndex] = fieldCopy[esr][matIndex].toViewConst();
     }
   } );
 
@@ -3027,7 +3027,7 @@ void SiloFile::WriteMaterialDataField4d( string const & meshName,
         nvar1 = std::max( nvar1, fieldData.size( 2 ) );
         nvar2 = std::max( nvar2, fieldData.size( 3 ) );
       }
-      fieldView[esr][matIndex] = fieldCopy[esr][matIndex];
+      fieldView[esr][matIndex] = fieldCopy[esr][matIndex].toViewConst();
     }
   } );
 

@@ -65,8 +65,8 @@ public:
   { return m_matchedPartitionBoundary; }
 
   /// @copydoc matchedPartitionBoundary()
-  arrayView1d< localIndex const > const & matchedPartitionBoundary() const
-  { return m_matchedPartitionBoundary; }
+  arrayView1d< localIndex const > matchedPartitionBoundary() const
+  { return m_matchedPartitionBoundary.toViewConst(); }
 
   /**
    * @brief @return An array containing the indices of the objects to send to the neighbor.
@@ -75,8 +75,8 @@ public:
   { return m_ghostsToSend; }
 
   /// @copydoc ghostsToSend()
-  arrayView1d< localIndex const > const & ghostsToSend() const
-  { return m_ghostsToSend; }
+  arrayView1d< localIndex const > ghostsToSend() const
+  { return m_ghostsToSend.toViewConst(); }
 
   /**
    * @brief @return An array containing the indices of the objects to receive from the neighbor.
@@ -85,8 +85,8 @@ public:
   { return m_ghostsToReceive; }
 
   /// @copydoc ghostsToReceive()
-  arrayView1d< localIndex const > const & ghostsToReceive() const
-  { return m_ghostsToReceive; }
+  arrayView1d< localIndex const > ghostsToReceive() const
+  { return m_ghostsToReceive.toViewConst(); }
 
   /**
    * @brief @return An array containing the indices of the adjacent objects (Improve this).
@@ -95,8 +95,8 @@ public:
   { return m_adjacencyList; }
 
   /// @copydoc adjacencyList()
-  arrayView1d< localIndex const > const & adjacencyList() const
-  { return m_adjacencyList; }
+  arrayView1d< localIndex const > adjacencyList() const
+  { return m_adjacencyList.toViewConst(); }
 
   /**
    * @brief @return An array containing the globalIndex of any objects the neighbor
@@ -106,8 +106,8 @@ public:
   { return m_nonLocalGhosts; }
 
   /// @copydoc nonLocalGhosts()
-  arrayView1d< std::pair< globalIndex, int > const > const & nonLocalGhosts() const
-  { return m_nonLocalGhosts; }
+  arrayView1d< std::pair< globalIndex, int > const > nonLocalGhosts() const
+  { return m_nonLocalGhosts.toViewConst(); }
 
 private:
   /// Array containing the indices of the objects on the bomain boundary with the neighbor.

@@ -151,7 +151,7 @@ std::pair< vtkSmartPointer< vtkPoints >, vtkSmartPointer< vtkCellArray > >VTKPol
   std::vector< int >  vtkOrdering = esr.getVTKNodeOrdering();
   for( localIndex ei = 0; ei < esr.size(); ei++ )
   {
-    auto & elem = nodeListPerElement[ei];
+    auto const & elem = nodeListPerElement[ei];
     for( localIndex i = 0; i < elem.size(); i++ )
     {
       auto const & VTKIndexPos = geosx2VTKIndexing.find( elem[vtkOrdering[i]] );
@@ -250,7 +250,7 @@ void VTKPolyDataWriterInterface::WriteField( WrapperBase const & wrapperBase, vt
   {
     typedef decltype( array ) arrayType;
     Wrapper< arrayType > const & wrapperT = Wrapper< arrayType >::cast( wrapperBase );
-    typename arrayType::ViewTypeConst const & sourceArray = wrapperT.reference();
+    auto const sourceArray = wrapperT.reference().toViewConst();
     if( typeID!=typeid(r1_array) )
     {
       integer nbOfComponents = 1;

@@ -419,13 +419,13 @@ void EdgeManager::BuildEdges( FaceManager * const faceManager, NodeManager * con
   localIndex const numEdges = calculateTotalNumberOfEdges( edgesByLowestNode.toViewConst(), uniqueEdgeOffsets );
 
   resizeEdgeToFaceMap( edgesByLowestNode.toViewConst(),
-                       uniqueEdgeOffsets,
+                       uniqueEdgeOffsets.toViewConst(),
                        m_toFacesRelation );
 
   resize( numEdges );
 
   populateMaps( edgesByLowestNode.toViewConst(),
-                uniqueEdgeOffsets,
+                uniqueEdgeOffsets.toViewConst(),
                 faceToNodeMap,
                 faceToEdgeMap,
                 m_toFacesRelation,
@@ -623,8 +623,8 @@ void EdgeManager::ExtractMapFromObjectForAssignGlobalIndexNumbers( ObjectManager
 
   localIndex const numEdges = size();
 
-  arrayView2d< localIndex const > const & edgeNodes = this->nodeList();
-  arrayView1d< integer const > const & isDomainBoundary = this->getReference< integer_array >( viewKeys.domainBoundaryIndicator );
+  arrayView2d< localIndex const > const edgeNodes = this->nodeList().toViewConst();
+  arrayView1d< integer const > const isDomainBoundary = this->getReference< integer_array >( viewKeys.domainBoundaryIndicator ).toViewConst();
 
   globalEdgeNodes.resize( numEdges );
 
@@ -789,8 +789,8 @@ localIndex EdgeManager::PackUpDownMapsPrivate( buffer_unit_type * & buffer,
                                            m_toNodesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToNodes,
                                            packList,
-                                           localToGlobalMap(),
-                                           m_toNodesRelation.RelatedObjectLocalToGlobal() );
+                                           localToGlobalMap().toSliceConst(),
+                                           m_toNodesRelation.RelatedObjectLocalToGlobal().toSliceConst() );
 
 
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::faceListString ) );
@@ -798,8 +798,8 @@ localIndex EdgeManager::PackUpDownMapsPrivate( buffer_unit_type * & buffer,
                                            m_toFacesRelation.Base().toArrayOfArraysView(),
                                            m_unmappedGlobalIndicesInToFaces,
                                            packList,
-                                           localToGlobalMap(),
-                                           m_toFacesRelation.RelatedObjectLocalToGlobal() );
+                                           localToGlobalMap().toViewConst(),
+                                           m_toFacesRelation.RelatedObjectLocalToGlobal().toViewConst() );
 
   return packedSize;
 }

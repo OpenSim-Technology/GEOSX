@@ -69,7 +69,7 @@ void NodeManager::SetEdgeMaps( EdgeManager const * const edgeManager )
 {
   GEOSX_MARK_FUNCTION;
 
-  arrayView2d< localIndex const > const & edgeToNodeMap = edgeManager->nodeList();
+  arrayView2d< localIndex const > const edgeToNodeMap = edgeManager->nodeList().toViewConst();
   localIndex const numEdges = edgeToNodeMap.size( 0 );
   localIndex const numNodes = size();
 
@@ -183,7 +183,7 @@ void NodeManager::SetElementMaps( ElementRegionManager const * const elementRegi
   elementRegionManager->
     forElementSubRegions< CellElementSubRegion >( [&elemsPerNode, &totalNodeElems]( CellElementSubRegion const & subRegion )
   {
-    arrayView2d< localIndex const, cells::NODE_MAP_USD > const & elemToNodeMap = subRegion.nodeList();
+    arrayView2d< localIndex const, cells::NODE_MAP_USD > const elemToNodeMap = subRegion.nodeList().toViewConst();
     forAll< parallelHostPolicy >( subRegion.size(), [&elemsPerNode, totalNodeElems, &elemToNodeMap, &subRegion] ( localIndex const k )
     {
       localIndex const numIndependedNodes = subRegion.numIndependentNodesPerElement();
@@ -234,7 +234,7 @@ void NodeManager::SetElementMaps( ElementRegionManager const * const elementRegi
                                                             ( localIndex const er, localIndex const esr, ElementRegionBase const &,
                                                             CellElementSubRegion const & subRegion )
   {
-    arrayView2d< localIndex const, cells::NODE_MAP_USD > const & elemToNodeMap = subRegion.nodeList();
+    arrayView2d< localIndex const, cells::NODE_MAP_USD > const elemToNodeMap = subRegion.nodeList().toViewConst();
     for( localIndex k = 0; k < subRegion.size(); ++k )
     {
       for( localIndex a=0; a<subRegion.numIndependentNodesPerElement(); ++a )
@@ -354,7 +354,7 @@ localIndex NodeManager::UnpackUpDownMaps( buffer_unit_type const * & buffer,
   GEOSX_ERROR_IF( temp != viewKeyStruct::elementListString, "" );
   unPackedSize += bufferOps::Unpack( buffer,
                                      this->m_toElements,
-                                     packList,
+                                     packList.toViewConst(),
                                      m_toElements.getElementRegionManager(),
                                      overwriteUpMaps );
 
@@ -383,8 +383,8 @@ void NodeManager::depopulateUpMaps( std::set< localIndex > const & receivedNodes
                                     ElementRegionManager const & elemRegionManager )
 {
 
-  ObjectManagerBase::CleanUpMap( receivedNodes, m_toEdgesRelation.toView(), edgesToNodes );
-  ObjectManagerBase::CleanUpMap( receivedNodes, m_toFacesRelation.toView(), facesToNodes );
+  ObjectManagerBase::CleanUpMap( receivedNodes, m_toEdgesRelation.toView(), edgesToNodes.toViewConst() );
+  ObjectManagerBase::CleanUpMap( receivedNodes, m_toFacesRelation.toView(), facesToNodes.toViewConst() );
 
   for( auto const & targetIndex : receivedNodes )
   {
@@ -397,7 +397,7 @@ void NodeManager::depopulateUpMaps( std::set< localIndex > const & receivedNodes
 
       CellElementSubRegion const * subRegion = elemRegionManager.GetRegion( elemRegionIndex )->
                                                  GetSubRegion< CellElementSubRegion >( elemSubRegionIndex );
-      arrayView2d< localIndex const, cells::NODE_MAP_USD > const & downmap = subRegion->nodeList();
+      arrayView2d< localIndex const, cells::NODE_MAP_USD > const downmap = subRegion->nodeList().toViewConst();
       bool hasTargetIndex = false;
 
       for( localIndex a=0; a<downmap.size( 1 ); ++a )

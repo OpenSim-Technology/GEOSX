@@ -291,19 +291,15 @@ public:
    * @brief Const Getter for stiffness tensor
    * @return ArrayView to the stiffness tensor
    */
-  arrayView3d< real64 const, solid::STIFFNESS_USD > const & getStiffness() const
-  {
-    return m_stiffness;
-  }
+  arrayView3d< real64 const, solid::STIFFNESS_USD > getStiffness() const
+  { return m_stiffness.toViewConst(); }
 
   /**
    * @brief Non-const Getter for stiffness tensor
    * @return ArrayView to the stiffness tensor
    */
-  arrayView3d< real64, solid::STIFFNESS_USD > const & getStiffness()
-  {
-    return m_stiffness;
-  }
+  arrayView3d< real64, solid::STIFFNESS_USD > getStiffness()
+  { return m_stiffness.toView(); }
 
 protected:
   virtual void PostProcessInput() override;

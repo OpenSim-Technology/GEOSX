@@ -182,7 +182,7 @@ void GMRESsolver< VECTOR >::solve( Vector const & b,
     }
 
     // Regardless of how we quit out of inner loop, j is the actual size of H
-    Backsolve( j, H, g );
+    Backsolve( j, H.toSliceConst(), g.toSlice() );
     w.zero();
     for( localIndex i = 0; i < j; ++i )
     {

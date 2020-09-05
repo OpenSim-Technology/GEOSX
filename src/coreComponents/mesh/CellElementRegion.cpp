@@ -130,7 +130,7 @@ void CellElementRegion::GenerateAggregates( FaceManager const * const faceManage
   // First, compute the volume of each aggregates
   this->forElementSubRegions< CellElementSubRegion, FaceElementSubRegion >( [&]( ElementSubRegionBase & elementSubRegion )
   {
-    arrayView1d< integer const > const & ghostRank = elementSubRegion.ghostRank();
+    arrayView1d< integer const > const ghostRank = elementSubRegion.ghostRank().toViewConst();
     localIndex const subRegionIndex = elementSubRegion.getIndexInParent();
     for( localIndex cellIndex = 0; cellIndex< elementSubRegion.size(); cellIndex++ )
     {
@@ -143,7 +143,7 @@ void CellElementRegion::GenerateAggregates( FaceManager const * const faceManage
   // Second, compute the normalized volume of each fine elements
   this->forElementSubRegions< CellElementSubRegion, FaceElementSubRegion >( [&]( ElementSubRegionBase & elementSubRegion )
   {
-    arrayView1d< integer const > const & ghostRank = elementSubRegion.ghostRank();
+    arrayView1d< integer const > const ghostRank = elementSubRegion.ghostRank().toViewConst();
     localIndex const subRegionIndex = elementSubRegion.getIndexInParent();
     for( localIndex cellIndex = 0; cellIndex< elementSubRegion.size(); cellIndex++ )
     {
@@ -157,7 +157,7 @@ void CellElementRegion::GenerateAggregates( FaceManager const * const faceManage
   // Third, normalize the centers
   this->forElementSubRegions< CellElementSubRegion, FaceElementSubRegion >( [&]( ElementSubRegionBase & elementSubRegion )
   {
-    arrayView1d< integer const > const & ghostRank = elementSubRegion.ghostRank();
+    arrayView1d< integer const > const ghostRank = elementSubRegion.ghostRank().toViewConst();
     localIndex const subRegionIndex = elementSubRegion.getIndexInParent();
     for( localIndex cellIndex = 0; cellIndex< elementSubRegion.size(); cellIndex++ )
     {

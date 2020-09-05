@@ -56,8 +56,8 @@ void ChomboCoupler::write( double dt )
     }
   }
 
-  arrayView1d< integer const > const & ruptureState = faces->getReference< integer_array >( "ruptureState" );
-  arrayView1d< integer const > const & ghostRank = faces->getReference< integer_array >( faces->viewKeys.ghostRank );
+  arrayView1d< integer const > const & ruptureState = faces->getReference< integer_array >( "ruptureState" ).toViewConst();
+  arrayView1d< integer const > const & ghostRank = faces->getReference< integer_array >( faces->viewKeys.ghostRank ).toViewConst();
 
   bool * faceMask = new bool[n_faces];
   for( localIndex i = 0; i < n_faces; ++i )

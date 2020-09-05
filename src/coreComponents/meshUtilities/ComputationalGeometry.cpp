@@ -217,7 +217,7 @@ bool IsPointInsidePolyhedron( arrayView2d< real64 const, nodes::REFERENCE_POSITI
 
   for( localIndex kf = 0; kf < numFaces; ++kf )
   {
-    Centroid_3DPolygon( faceNodeIndicies[kf], nodeCoordinates, faceCenter, faceNormal, areaTolerance );
+    Centroid_3DPolygon( faceNodeIndicies[kf].toSliceConst(), nodeCoordinates, faceCenter, faceNormal, areaTolerance );
 
     LvArray::tensorOps::subtract< 3 >( faceCenter, point );
     int const s = sgn( LvArray::tensorOps::AiBi< 3 >( faceNormal, faceCenter ) );

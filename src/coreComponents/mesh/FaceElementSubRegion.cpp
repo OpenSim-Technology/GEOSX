@@ -171,7 +171,7 @@ localIndex FaceElementSubRegion::PackUpDownMapsPrivate( buffer_unit_type * & buf
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::nodeListString ) );
 
   packedSize += bufferOps::Pack< DOPACK >( buffer,
-                                           m_toNodesRelation.Base(),
+                                           m_toNodesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToNodes,
                                            packList,
                                            this->localToGlobalMap(),
@@ -179,7 +179,7 @@ localIndex FaceElementSubRegion::PackUpDownMapsPrivate( buffer_unit_type * & buf
 
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::edgeListString ) );
   packedSize += bufferOps::Pack< DOPACK >( buffer,
-                                           m_toEdgesRelation.Base(),
+                                           m_toEdgesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToEdges,
                                            packList,
                                            this->localToGlobalMap(),
@@ -190,8 +190,8 @@ localIndex FaceElementSubRegion::PackUpDownMapsPrivate( buffer_unit_type * & buf
                                            m_toFacesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToFaces,
                                            packList,
-                                           this->localToGlobalMap(),
-                                           m_toFacesRelation.RelatedObjectLocalToGlobal() );
+                                           this->localToGlobalMap().toSliceConst(),
+                                           m_toFacesRelation.RelatedObjectLocalToGlobal().toSliceConst() );
 
 
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::faceElementsToCellRegionsString ) );
@@ -252,7 +252,7 @@ localIndex FaceElementSubRegion::UnpackUpDownMaps( buffer_unit_type const * & bu
 
   unPackedSize += bufferOps::Unpack( buffer,
                                      m_faceElementsToCells,
-                                     packList,
+                                     packList.toViewConst(),
                                      m_faceElementsToCells.getElementRegionManager(),
                                      overwriteUpMaps );
 

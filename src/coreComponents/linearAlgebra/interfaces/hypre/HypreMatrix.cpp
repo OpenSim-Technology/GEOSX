@@ -172,7 +172,7 @@ void HypreMatrix::createWithGlobalSize( globalIndex const globalRows,
               iupper,
               jlower,
               jupper,
-              row_sizes,
+              row_sizes.toSliceConst(),
               m_ij_mat );
 }
 
@@ -200,7 +200,7 @@ void HypreMatrix::createWithLocalSize( localIndex const localRows,
               iupper,
               jlower,
               jupper,
-              row_sizes,
+              row_sizes.toSliceConst(),
               m_ij_mat );
 }
 
@@ -473,7 +473,7 @@ void HypreMatrix::add( arraySlice1d< globalIndex const > const & rowIndices,
 {
   array2d< real64, MatrixLayout::ROW_MAJOR_PERM > valuesRowMajor( rowIndices.size(), colIndices.size() );
   convertArrayLayout( values, valuesRowMajor.toSlice() );
-  add( rowIndices, colIndices, valuesRowMajor );
+  add( rowIndices, colIndices, valuesRowMajor.toSliceConst() );
 }
 
 void HypreMatrix::set( arraySlice1d< globalIndex const > const & rowIndices,
@@ -482,7 +482,7 @@ void HypreMatrix::set( arraySlice1d< globalIndex const > const & rowIndices,
 {
   array2d< real64, MatrixLayout::ROW_MAJOR_PERM > valuesRowMajor( rowIndices.size(), colIndices.size() );
   convertArrayLayout( values, valuesRowMajor.toSlice() );
-  set( rowIndices, colIndices, valuesRowMajor );
+  set( rowIndices, colIndices, valuesRowMajor.toSliceConst() );
 }
 
 void HypreMatrix::insert( arraySlice1d< globalIndex const > const & rowIndices,
@@ -491,7 +491,7 @@ void HypreMatrix::insert( arraySlice1d< globalIndex const > const & rowIndices,
 {
   array2d< real64, MatrixLayout::ROW_MAJOR_PERM > valuesRowMajor( rowIndices.size(), colIndices.size() );
   convertArrayLayout( values, valuesRowMajor.toSlice() );
-  insert( rowIndices, colIndices, valuesRowMajor );
+  insert( rowIndices, colIndices, valuesRowMajor.toSliceConst() );
 }
 
 void HypreMatrix::add( globalIndex const * rowIndices,
@@ -870,7 +870,7 @@ void HypreMatrix::addEntries( HypreMatrix const & src, real64 const scale )
     localIndex const numEntries = src.globalRowLength( rowIndex );
     colIndices.resize( numEntries );
     values.resize( numEntries );
-    src.getRowCopy( rowIndex, colIndices, values );
+    src.getRowCopy( rowIndex, colIndices.toSlice(), values.toSlice() );
     if( !isEqual( scale, 1.0 ) )
     {
       for( localIndex i = 0; i < numEntries; ++i )
@@ -878,7 +878,7 @@ void HypreMatrix::addEntries( HypreMatrix const & src, real64 const scale )
         values[i] *= scale;
       }
     }
-    add( rowIndex, colIndices, values );
+    add( rowIndex, colIndices.toSliceConst(), values.toSliceConst() );
   }
   close();
 }

@@ -409,8 +409,8 @@ public:
    * @return an immutable arrayView of the reference position.
    */
 
-  arrayView2d< real64 const, nodes::REFERENCE_POSITION_USD > const & referencePosition() const
-  { return m_referencePosition; }
+  arrayView2d< real64 const, nodes::REFERENCE_POSITION_USD > referencePosition() const
+  { return m_referencePosition.toViewConst(); }
   //END_SPHINX_REFPOS_ACCESS
 
   /**
@@ -419,19 +419,15 @@ public:
    * @note An error is thrown if the total displacement does not exist
    */
   array2d< real64, nodes::TOTAL_DISPLACEMENT_PERM > & totalDisplacement()
-  {
-    return getReference< array2d< real64, nodes::TOTAL_DISPLACEMENT_PERM > >( viewKeys.totalDisplacement );
-  }
+  { return getReference< array2d< real64, nodes::TOTAL_DISPLACEMENT_PERM > >( viewKeys.totalDisplacement ); }
 
   /**
    * @brief Provide an immutable arrayView to the total displacement array.
    * @return immutable arrayView of the total displacement array if it exists, or an error is thrown if it does not exist
    * @note An error is thrown if the total displacement does not exist
    */
-  arrayView2d< real64 const, nodes::TOTAL_DISPLACEMENT_USD > const & totalDisplacement() const
-  {
-    return getReference< array2d< real64, nodes::TOTAL_DISPLACEMENT_PERM > >( viewKeys.totalDisplacement );
-  }
+  arrayView2d< real64 const, nodes::TOTAL_DISPLACEMENT_USD > totalDisplacement() const
+  {return getReference< array2d< real64, nodes::TOTAL_DISPLACEMENT_PERM > >( viewKeys.totalDisplacement ); }
 
   /**
    * @brief Get a mutable incremental displacement array.
@@ -439,19 +435,15 @@ public:
    * @note An error is thrown if the incremental displacement does not exist
    */
   array2d< real64, nodes::INCR_DISPLACEMENT_PERM > & incrementalDisplacement()
-  {
-    return getReference< array2d< real64, nodes::INCR_DISPLACEMENT_PERM > >( viewKeys.incrementalDisplacement );
-  }
+  { return getReference< array2d< real64, nodes::INCR_DISPLACEMENT_PERM > >( viewKeys.incrementalDisplacement ); }
 
   /**
    * @brief Provide an immutable arrayView to the incremental displacement array.
    * @return immutable arrayView of the incremental displacement array if it exists, or an error is thrown if it does not exist
    * @note An error is thrown if the total incremental does not exist
    */
-  arrayView2d< real64 const, nodes::INCR_DISPLACEMENT_USD > const & incrementalDisplacement() const
-  {
-    return getReference< array2d< real64, nodes::INCR_DISPLACEMENT_PERM > >( viewKeys.incrementalDisplacement );
-  }
+  arrayView2d< real64 const, nodes::INCR_DISPLACEMENT_USD > incrementalDisplacement() const
+  { return getReference< array2d< real64, nodes::INCR_DISPLACEMENT_PERM > >( viewKeys.incrementalDisplacement ); }
 
   /**
    * @brief Get a mutable velocity array.
@@ -459,19 +451,15 @@ public:
    * @note An error is thrown if the velocity array does not exist
    */
   array2d< real64, nodes::VELOCITY_PERM > & velocity()
-  {
-    return getReference< array2d< real64, nodes::VELOCITY_PERM > >( viewKeys.velocity );
-  }
+  { return getReference< array2d< real64, nodes::VELOCITY_PERM > >( viewKeys.velocity ); }
 
   /**
    * @brief Provide an immutable arrayView to the velocity array.
    * @return immutable arrayView of the velocity array if it exists, or an error is thrown if it does not exist
    * @note An error is thrown if the velocity array does not exist
    */
-  arrayView2d< real64 const, nodes::VELOCITY_USD > const & velocity() const
-  {
-    return getReference< array2d< real64, nodes::VELOCITY_PERM > >( viewKeys.velocity );
-  }
+  arrayView2d< real64 const, nodes::VELOCITY_USD > velocity() const
+  { return getReference< array2d< real64, nodes::VELOCITY_PERM > >( viewKeys.velocity ); }
 
   /**
    * @brief Get a mutable acceleration array.
@@ -479,19 +467,15 @@ public:
    * @note An error is thrown if the acceleration array does not exist
    */
   array2d< real64, nodes::ACCELERATION_PERM > & acceleration()
-  {
-    return getReference< array2d< real64, nodes::ACCELERATION_PERM > >( viewKeys.acceleration );
-  }
+  { return getReference< array2d< real64, nodes::ACCELERATION_PERM > >( viewKeys.acceleration ); }
 
   /**
    * @brief Provide an immutable arrayView to the acceleration array.
    * @return immutable arrayView of the acceleration array if it exists, or an error is thrown if it does not exist
    * @note An error is thrown if the acceleration array does not exist
    */
-  arrayView2d< real64 const, nodes::ACCELERATION_USD > const & acceleration() const
-  {
-    return getReference< array2d< real64, nodes::ACCELERATION_PERM > >( viewKeys.acceleration );
-  }
+  arrayView2d< real64 const, nodes::ACCELERATION_USD > acceleration() const
+  { return getReference< array2d< real64, nodes::ACCELERATION_PERM > >( viewKeys.acceleration ); }
 
   ///@}
 
@@ -538,3 +522,4 @@ private:
 }
 
 #endif // MESH_NODEMANAGER_HPP_
+ 

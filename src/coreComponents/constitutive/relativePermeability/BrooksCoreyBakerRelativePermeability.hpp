@@ -305,7 +305,7 @@ BrooksCoreyBakerRelativePermeabilityUpdate::
 
     InterpolateTwoPhaseRelPerms( shiftedWaterVolFrac,
                                  phaseVolFraction[ip_gas],
-                                 m_phaseOrder,
+                                 m_phaseOrder.toSliceConst(),
                                  oilRelPerm_wo,
                                  dOilRelPerm_wo_dOilVolFrac,
                                  oilRelPerm_go,

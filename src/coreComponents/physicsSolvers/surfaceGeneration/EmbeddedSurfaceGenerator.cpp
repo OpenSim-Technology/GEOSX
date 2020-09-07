@@ -123,7 +123,7 @@ void EmbeddedSurfaceGenerator::InitializePostSubGroups( Group * const problemMan
     elemManager->forElementSubRegionsComplete< CellElementSubRegion >(
       [&]( localIndex const er, localIndex const esr, ElementRegionBase &, CellElementSubRegion & subRegion )
     {
-      CellElementSubRegion::NodeMapType::ViewTypeConst const & cellToNodes = subRegion.nodeList();
+      arrayView2d< localIndex const > const cellToNodes = subRegion.nodeList();
       FixedOneToManyRelation const & cellToEdges = subRegion.edgeList();
       for( localIndex cellIndex =0; cellIndex<subRegion.size(); cellIndex++ )
       {

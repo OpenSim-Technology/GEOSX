@@ -1085,7 +1085,7 @@ FieldSpecificationBase::
     } );
   }
 
-  FIELD_OP::template PrescribeRhsValues< POLICY >( rhs, dof, dofRankOffset, rhsContribution );
+  FIELD_OP::template PrescribeRhsValues< POLICY >( rhs, dof.toViewConst(), dofRankOffset, rhsContribution.toViewConst() );
 }
 
 template< typename POLICY >

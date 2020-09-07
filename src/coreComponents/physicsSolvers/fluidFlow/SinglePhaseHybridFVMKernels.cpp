@@ -99,9 +99,9 @@ AssemblerKernelHelper::UpdateUpwindedCoefficients( localIndex const er,
                                                    arrayView2d< localIndex const > const & elemList,
                                                    SortedArrayView< localIndex const > const & regionFilter,
                                                    arraySlice1d< localIndex const > const & elemToFaces,
-                                                   ElementView< arrayView1d< real64 const > > const & mob,
-                                                   ElementView< arrayView1d< real64 const > > const & dMob_dp,
-                                                   ElementView< arrayView1d< globalIndex const > > const & elemDofNumber,
+                                                   ElementViewConst< arrayView1d< real64 const > > const & mob,
+                                                   ElementViewConst< arrayView1d< real64 const > > const & dMob_dp,
+                                                   ElementViewConst< arrayView1d< globalIndex const > > const & elemDofNumber,
                                                    arraySlice1d< real64 const > const & oneSidedVolFlux,
                                                    arraySlice1d< real64 > const & upwMobility,
                                                    arraySlice1d< real64 > const & dUpwMobility_dp,
@@ -310,9 +310,9 @@ AssemblerKernel::Compute( localIndex const er,
                           real64 const & elemGravCoef,
                           real64 const & elemDens,
                           real64 const & dElemDens_dp,
-                          ElementView< arrayView1d< real64 const > > const & mobility,
-                          ElementView< arrayView1d< real64 const > > const & dMobility_dp,
-                          ElementView< arrayView1d< globalIndex const > > const & elemDofNumber,
+                          ElementViewConst< arrayView1d< real64 const > > const & mobility,
+                          ElementViewConst< arrayView1d< real64 const > > const & dMobility_dp,
+                          ElementViewConst< arrayView1d< globalIndex const > > const & elemDofNumber,
                           integer const elemGhostRank,
                           globalIndex const rankOffset,
                           real64 const & dt,
@@ -358,9 +358,9 @@ AssemblerKernel::Compute( localIndex const er,
                                                          elemDens,
                                                          dElemDens_dp,
                                                          transMatrix,
-                                                         oneSidedVolFlux,
-                                                         dOneSidedVolFlux_dp,
-                                                         dOneSidedVolFlux_dfp );
+                                                         oneSidedVolFlux.toSlice(),
+                                                         dOneSidedVolFlux_dp.toSlice(),
+                                                         dOneSidedVolFlux_dfp.toSlice() );
 
   // at this point, we know the local flow direction in the element
   // so we can upwind the transport coefficients (mobilities) at the one sided faces
@@ -376,10 +376,10 @@ AssemblerKernel::Compute( localIndex const er,
                                                              mobility,
                                                              dMobility_dp,
                                                              elemDofNumber,
-                                                             oneSidedVolFlux,
-                                                             upwMobility,
-                                                             dUpwMobility_dp,
-                                                             upwDofNumber );
+                                                             oneSidedVolFlux.toSliceConst(),
+                                                             upwMobility.toSlice(),
+                                                             dUpwMobility_dp.toSlice(),
+                                                             upwDofNumber.toSlice() );
 
     /*
      * perform assembly in this element in two steps:
@@ -393,12 +393,12 @@ AssemblerKernel::Compute( localIndex const er,
                                                              elemToFaces,
                                                              elemDofNumber[er][esr][ei],
                                                              rankOffset,
-                                                             oneSidedVolFlux,
-                                                             dOneSidedVolFlux_dp,
-                                                             dOneSidedVolFlux_dfp,
-                                                             upwMobility,
-                                                             dUpwMobility_dp,
-                                                             upwDofNumber,
+                                                             oneSidedVolFlux.toSlice(),
+                                                             dOneSidedVolFlux_dp.toSlice(),
+                                                             dOneSidedVolFlux_dfp.toSlice(),
+                                                             upwMobility.toSlice(),
+                                                             dUpwMobility_dp.toSlice(),
+                                                             upwDofNumber.toSlice(),
                                                              dt,
                                                              localMatrix,
                                                              localRhs );
@@ -411,9 +411,9 @@ AssemblerKernel::Compute( localIndex const er,
                                                     elemToFaces,
                                                     elemDofNumber[er][esr][ei],
                                                     rankOffset,
-                                                    oneSidedVolFlux,
-                                                    dOneSidedVolFlux_dp,
-                                                    dOneSidedVolFlux_dfp,
+                                                    oneSidedVolFlux.toSliceConst(),
+                                                    dOneSidedVolFlux_dp.toSliceConst(),
+                                                    dOneSidedVolFlux_dfp.toSliceConst(),
                                                     localMatrix,
                                                     localRhs );
 }
@@ -438,9 +438,9 @@ FluxKernel::Launch( localIndex er,
                     arrayView1d< real64 const > const & facePres,
                     arrayView1d< real64 const > const & dFacePres,
                     arrayView1d< real64 const > const & faceGravCoef,
-                    ElementView< arrayView1d< real64 const > > const & mobility,
-                    ElementView< arrayView1d< real64 const > > const & dMobility_dp,
-                    ElementView< arrayView1d< globalIndex const > > const & elemDofNumber,
+                    ElementViewConst< arrayView1d< real64 const > > const & mobility,
+                    ElementViewConst< arrayView1d< real64 const > > const & dMobility_dp,
+                    ElementViewConst< arrayView1d< globalIndex const > > const & elemDofNumber,
                     localIndex const rankOffset,
                     real64 const lengthTolerance,
                     real64 const dt,
@@ -452,29 +452,29 @@ FluxKernel::Launch( localIndex er,
     subRegion.getReference< array1d< integer > >( ObjectManagerBase::viewKeyStruct::ghostRankString );
 
   // get the map from elem to faces
-  arrayView2d< localIndex const > const & elemToFaces = subRegion.faceList();
+  arrayView2d< localIndex const > const elemToFaces = subRegion.faceList().toViewConst();
 
   // get the cell-centered pressures
-  arrayView1d< real64 const > const & elemPres  =
+  arrayView1d< real64 const > const elemPres  =
     subRegion.getReference< array1d< real64 > >( SinglePhaseBase::viewKeyStruct::pressureString );
-  arrayView1d< real64 const > const & dElemPres =
+  arrayView1d< real64 const > const dElemPres =
     subRegion.getReference< array1d< real64 > >( SinglePhaseBase::viewKeyStruct::deltaPressureString );
 
   // get the element data needed for transmissibility computation
-  arrayView2d< real64 const > const & elemCenter =
+  arrayView2d< real64 const > const elemCenter =
     subRegion.getReference< array2d< real64 > >( CellBlock::viewKeyStruct::elementCenterString );
-  arrayView1d< real64 const > const & elemVolume =
+  arrayView1d< real64 const > const elemVolume =
     subRegion.getReference< array1d< real64 > >( CellBlock::viewKeyStruct::elementVolumeString );
-  arrayView1d< R1Tensor const > const & elemPerm =
+  arrayView1d< R1Tensor const > const elemPerm =
     subRegion.getReference< array1d< R1Tensor > >( SinglePhaseBase::viewKeyStruct::permeabilityString );
 
   // get the cell-centered depth
-  arrayView1d< real64 const > const & elemGravCoef =
+  arrayView1d< real64 const > const elemGravCoef =
     subRegion.getReference< array1d< real64 > >( SinglePhaseBase::viewKeyStruct::gravityCoefString );
 
   // get the fluid data
-  arrayView2d< real64 const > const & elemDens = fluid.density();
-  arrayView2d< real64 const > const & dElemDens_dp = fluid.dDensity_dPressure();
+  arrayView2d< real64 const > const elemDens = fluid.density();
+  arrayView2d< real64 const > const dElemDens_dp = fluid.dDensity_dPressure();
 
   // assemble the residual and Jacobian element by element
   // in this loop we assemble both equation types: mass conservation in the elements and constraints at the faces
@@ -497,7 +497,7 @@ FluxKernel::Launch( localIndex er,
                                                                        perm,
                                                                        2,
                                                                        lengthTolerance,
-                                                                       transMatrix );
+                                                                       transMatrix.toSlice() );
 
     // perform flux assembly in this element
     SinglePhaseHybridFVMKernels::AssemblerKernel::Compute< NF >( er, esr, ei,
@@ -522,7 +522,7 @@ FluxKernel::Launch( localIndex er,
                                                                  elemGhostRank[ei],
                                                                  rankOffset,
                                                                  dt,
-                                                                 transMatrix,
+                                                                 transMatrix.toSliceConst(),
                                                                  localMatrix,
                                                                  localRhs );
 
@@ -597,9 +597,9 @@ INST_AssembleKernelHelper( 6 );
                                  arrayView1d< real64 const > const & facePres, \
                                  arrayView1d< real64 const > const & dFacePres, \
                                  arrayView1d< real64 const > const & faceGravCoef, \
-                                 ElementView< arrayView1d< real64 const > > const & mobility, \
-                                 ElementView< arrayView1d< real64 const > > const & dMobility_dp, \
-                                 ElementView< arrayView1d< globalIndex const > > const & elemDofNumber, \
+                                 ElementViewConst< arrayView1d< real64 const > > const & mobility, \
+                                 ElementViewConst< arrayView1d< real64 const > > const & dMobility_dp, \
+                                 ElementViewConst< arrayView1d< globalIndex const > > const & elemDofNumber, \
                                  localIndex const rankOffset, \
                                  real64 const lengthTolerance, \
                                  real64 const dt, \

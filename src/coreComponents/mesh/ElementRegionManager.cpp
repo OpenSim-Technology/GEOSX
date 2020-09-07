@@ -459,22 +459,22 @@ int ElementRegionManager::PackUpDownMapsSize( ElementViewAccessor< arrayView1d< 
   buffer_unit_type * junk = nullptr;
   return PackUpDownMapsPrivate< false >( junk, packList );
 }
-// int ElementRegionManager::PackUpDownMapsSize( ElementReferenceAccessor< array1d< localIndex > > const & packList ) const
-// {
-//   buffer_unit_type * junk = nullptr;
-//   return PackUpDownMapsPrivate< false >( junk, packList );
-// }
+int ElementRegionManager::PackUpDownMapsSize( ElementReferenceAccessor< array1d< localIndex > > const & packList ) const
+{
+  buffer_unit_type * junk = nullptr;
+  return PackUpDownMapsPrivate< false >( junk, packList );
+}
 
 int ElementRegionManager::PackUpDownMaps( buffer_unit_type * & buffer,
                                           ElementViewAccessor< arrayView1d< localIndex > > const & packList ) const
 {
   return PackUpDownMapsPrivate< true >( buffer, packList );
 }
-// int ElementRegionManager::PackUpDownMaps( buffer_unit_type * & buffer,
-//                                           ElementReferenceAccessor< array1d< localIndex > > const & packList ) const
-// {
-//   return PackUpDownMapsPrivate< true >( buffer, packList );
-// }
+int ElementRegionManager::PackUpDownMaps( buffer_unit_type * & buffer,
+                                          ElementReferenceAccessor< array1d< localIndex > > const & packList ) const
+{
+  return PackUpDownMapsPrivate< true >( buffer, packList );
+}
 
 template< bool DOPACK, typename T >
 int
@@ -496,7 +496,7 @@ ElementRegionManager::PackUpDownMapsPrivate( buffer_unit_type * & buffer,
     {
       packedSize += bufferOps::Pack< DOPACK >( buffer, subRegion.getName() );
 
-      arrayView1d< localIndex const > const elemList = packList[kReg][esr].toViewConst();
+      arrayView1d< localIndex > const elemList = packList[kReg][esr];
       if( DOPACK )
       {
         packedSize += subRegion.PackUpDownMaps( buffer, elemList );

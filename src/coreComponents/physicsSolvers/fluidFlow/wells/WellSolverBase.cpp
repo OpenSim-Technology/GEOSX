@@ -102,7 +102,7 @@ void WellSolverBase::SetupDofs( DomainPartition const & domain,
   dofManager.addField( WellElementDofName(),
                        DofManager::Location::Elem,
                        NumDofPerWellElement(),
-                       regions );
+                       regions.toViewConst() );
 
   dofManager.addCoupling( WellElementDofName(),
                           WellElementDofName(),
@@ -164,7 +164,7 @@ void WellSolverBase::InitializePreSubGroups( Group * const rootGroup )
   for( auto & mesh : domain->getMeshBodies()->GetSubGroups() )
   {
     MeshLevel & meshLevel = *Group::group_cast< MeshBody * >( mesh.second )->getMeshLevel( 0 );
-    ValidateModelMapping( *meshLevel.getElemManager(), m_fluidModelNames );
+    ValidateModelMapping( *meshLevel.getElemManager(), m_fluidModelNames.toViewConst() );
   }
 
   FlowSolverBase const * const flowSolver = getParent()->GetGroup< FlowSolverBase >( GetFlowSolverName() );
@@ -203,15 +203,15 @@ void WellSolverBase::PrecomputeData( DomainPartition & domain )
   {
     PerforationData * const perforationData = subRegion.GetPerforationData();
 
-    arrayView2d< real64 const > const & wellElemLocation = subRegion.getElementCenter();
+    arrayView2d< real64 const > const wellElemLocation = subRegion.getElementCenter().toViewConst();
 
-    arrayView1d< real64 > const & wellElemGravCoef =
+    arrayView1d< real64 > const wellElemGravCoef =
       subRegion.getReference< array1d< real64 > >( viewKeyStruct::gravityCoefString );
 
-    arrayView1d< R1Tensor const > const & perfLocation =
-      perforationData->getReference< array1d< R1Tensor > >( PerforationData::viewKeyStruct::locationString );
+    arrayView1d< R1Tensor const > const perfLocation =
+      perforationData->getReference< array1d< R1Tensor > >( PerforationData::viewKeyStruct::locationString ).toViewConst();
 
-    arrayView1d< real64 > const & perfGravCoef =
+    arrayView1d< real64 > const perfGravCoef =
       perforationData->getReference< array1d< real64 > >( viewKeyStruct::gravityCoefString );
 
     for( localIndex iwelem = 0; iwelem < subRegion.size(); ++iwelem )

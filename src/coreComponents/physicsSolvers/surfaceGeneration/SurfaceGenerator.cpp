@@ -658,7 +658,7 @@ int SurfaceGenerator::SeparationDriver( DomainPartition & domain,
 
       for( localIndex kfe=0; kfe<subRegion.size(); ++kfe )
       {
-        nodeMap[kfe].resize( 8 );
+        nodeMap.resizeArray( kfe, 8 );
 
         localIndex const numNodesInFace = faceToNodeMap.sizeOfArray( faceMap[ kfe ][ 0 ] );
         for( localIndex a = 0; a < numNodesInFace; ++a )
@@ -2853,11 +2853,11 @@ void SurfaceGenerator::CalculateNodeAndFaceSIF( DomainPartition & domain,
                                                                                                                constitutiveManager );
 
 
-  ElementRegionManager::ElementViewAccessor< array4d< real64 > > const
-  dNdX = elementManager.ConstructViewAccessor< array4d< real64 > >( keys::dNdX );
+  ElementRegionManager::ElementViewAccessor< arrayView4d< real64 const > > const
+  dNdX = elementManager.ConstructViewAccessor< array4d< real64 >, arrayView4d< real64 const > >( keys::dNdX );
 
-  ElementRegionManager::ElementViewAccessor< array2d< real64 > > const
-  detJ = elementManager.ConstructViewAccessor< array2d< real64 > >( keys::detJ );
+  ElementRegionManager::ElementViewAccessor< arrayView2d< real64 const > > const
+  detJ = elementManager.ConstructViewAccessor< array2d< real64 >, arrayView2d< real64 const > >( keys::detJ );
 
 
 
@@ -3674,11 +3674,11 @@ int SurfaceGenerator::CalculateElementForcesOnEdge( DomainPartition & domain,
                                                              arrayView3d< real64 const, solid::STRESS_USD > >( SolidBase::viewKeyStruct::stressString,
                                                                                                                constitutiveManager );
 
-  ElementRegionManager::ElementViewAccessor< array4d< real64 > > const
-  dNdX = elementManager.ConstructViewAccessor< array4d< real64 > >( keys::dNdX );
+  ElementRegionManager::ElementViewAccessor< arrayView4d< real64 const > > const
+  dNdX = elementManager.ConstructViewAccessor< array4d< real64 >, arrayView4d< real64 const > >( keys::dNdX );
 
-  ElementRegionManager::ElementViewAccessor< array2d< real64 > > const
-  detJ = elementManager.ConstructViewAccessor< array2d< real64 > >( keys::detJ );
+  ElementRegionManager::ElementViewAccessor< arrayView2d< real64 const > > const
+  detJ = elementManager.ConstructViewAccessor< array2d< real64 >, arrayView2d< real64 const > >( keys::detJ );
 
   ElementRegionManager::ElementViewAccessor< arrayView2d< real64 const > > const elemCenter =
     elementManager.ConstructViewAccessor< array2d< real64 >, arrayView2d< real64 const > >( ElementSubRegionBase::viewKeyStruct::elementCenterString );

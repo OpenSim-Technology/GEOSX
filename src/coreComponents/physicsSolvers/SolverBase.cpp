@@ -258,7 +258,7 @@ real64 SolverBase::LinearImplicitStep( real64 const & time_n,
   m_solution.extract( m_localSolution );
 
   // apply the system solution to the fields/variables
-  ApplySystemSolution( m_dofManager, m_localSolution, 1.0, domain );
+  ApplySystemSolution( m_dofManager, m_localSolution.toViewConst(), 1.0, domain );
 
   // final step for completion of timestep. typically secondary variable updates and cleanup.
   ImplicitStepComplete( time_n, dt, domain );
@@ -325,7 +325,7 @@ bool SolverBase::LineSearch( real64 const & time_n,
     }
 
     // get residual norm
-    residualNorm = CalculateResidualNorm( domain, dofManager, localRhs );
+    residualNorm = CalculateResidualNorm( domain, dofManager, localRhs.toViewConst() );
 
     if( getLogLevel() >= 1 && logger::internal::rank==0 )
     {
@@ -551,9 +551,9 @@ real64 SolverBase::NonlinearImplicitStep( real64 const & time_n,
       // TODO: This step will not be needed when we teach LA vectors to wrap our pointers
       m_solution.extract( m_localSolution );
 
-      scaleFactor = ScalingForSystemSolution( domain, m_dofManager, m_localSolution );
+      scaleFactor = ScalingForSystemSolution( domain, m_dofManager, m_localSolution.toViewConst() );
 
-      if( !CheckSystemSolution( domain, m_dofManager, m_localSolution, scaleFactor ) )
+      if( !CheckSystemSolution( domain, m_dofManager, m_localSolution.toViewConst(), scaleFactor ) )
       {
         // TODO try chopping (similar to line search)
         GEOSX_LOG_RANK_0( "    Solution check failed. Newton loop terminated." );
@@ -561,7 +561,7 @@ real64 SolverBase::NonlinearImplicitStep( real64 const & time_n,
       }
 
       // apply the system solution to the fields/variables
-      ApplySystemSolution( m_dofManager, m_localSolution, scaleFactor, domain );
+      ApplySystemSolution( m_dofManager, m_localSolution.toViewConst(), scaleFactor, domain );
 
       lastResidual = residualNorm;
     }

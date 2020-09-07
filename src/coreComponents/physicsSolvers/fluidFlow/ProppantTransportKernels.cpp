@@ -126,8 +126,8 @@ AccumulationKernel::
                effectiveVolume,
                packPoreVolume,
                proppantLiftVolume,
-               localAccum,
-               localAccumJacobian );
+               localAccum.toSlice(),
+               localAccumJacobian.toSlice() );
 
       globalIndex const elemDOF = dofNumber[ei];
 
@@ -926,8 +926,8 @@ void FluxKernel::
                        unitGravityVector,
                        transTMultiplier[er][esr],
                        dt,
-                       localFlux,
-                       localFluxJacobian );
+                       localFlux.toSlice(),
+                       localFluxJacobian.toSlice() );
 
       for( localIndex i = 0; i < stencilSize; ++i )
       {

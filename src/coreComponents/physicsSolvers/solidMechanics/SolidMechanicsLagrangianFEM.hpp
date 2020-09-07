@@ -244,7 +244,7 @@ public:
   struct groupKeyStruct
   {} solidMechanicsGroupKeys;
 
-  arrayView1d< string const > const & solidMaterialNames() const { return m_solidMaterialNames; }
+  arrayView1d< string const > solidMaterialNames() const { return m_solidMaterialNames; }
 
   SortedArray< localIndex > & getElemsAttachedToSendOrReceiveNodes( ElementSubRegionBase & subRegion )
   {

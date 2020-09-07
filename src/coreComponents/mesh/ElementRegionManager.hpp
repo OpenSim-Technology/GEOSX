@@ -57,6 +57,12 @@ public:
   template< typename VIEWTYPE >
   using ElementViewAccessor = array1d< array1d< VIEWTYPE > >;
 
+  template< typename VIEWTYPE >
+  using ElementView = typename ElementViewAccessor< VIEWTYPE >::NestedViewType;
+
+  template< typename VIEWTYPE >
+  using ElementViewConst = typename ElementViewAccessor< VIEWTYPE >::NestedViewTypeConst;
+
   /**
    * @brief The ElementViewAccessor at the ElementRegionManager level is a 2D array of ReferenceWrapper around VIEWTYPE.
    * @tparam VIEWTYPE data type
@@ -983,7 +989,7 @@ public:
    * @param packList list of indices to pack
    * @return the size of data packed.
    */
-  // int PackUpDownMapsSize( ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
+  int PackUpDownMapsSize( ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
 
   /**
    * @brief Pack element-to-node and element-to-face maps.
@@ -1000,8 +1006,8 @@ public:
    * @param packList list of indices to pack
    * @return the size of data packed.
    */
-  // int PackUpDownMaps( buffer_unit_type * & buffer,
-  //                     ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
+  int PackUpDownMaps( buffer_unit_type * & buffer,
+                      ElementReferenceAccessor< array1d< localIndex > > const & packList ) const;
 
   /**
    * @brief Unpack element-to-node and element-to-face maps.

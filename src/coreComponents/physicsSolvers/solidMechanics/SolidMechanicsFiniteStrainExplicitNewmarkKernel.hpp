@@ -207,7 +207,7 @@ public:
   {
 #if defined(CALCFEMSHAPE)
     real64 dNdX[ numNodesPerElem ][ 3 ];
-    real64 const detJ = FE_TYPE::shapeFunctionDerivatives( q, stack.xLocal, dNdX );
+    real64 const detJ = FE_TYPE::calcGradN( q, stack.xLocal, dNdX );
 
     /// Macro to substitute in the shape function derivatives.
     #define DNDX dNdX

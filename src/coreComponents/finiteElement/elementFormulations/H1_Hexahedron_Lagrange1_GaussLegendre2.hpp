@@ -102,7 +102,7 @@ public:
    */
   GEOSX_HOST_DEVICE
   GEOSX_FORCE_INLINE
-  static void shapeFunctionValues( localIndex const q,
+  static void calcN( localIndex const q,
                                    real64 (& N)[numNodes] )
   {
     int qa, qb, qc;
@@ -124,7 +124,7 @@ public:
    * @return The determinant of the parent/physical transformation matrix.
    */
   GEOSX_HOST_DEVICE
-  static real64 shapeFunctionDerivatives( localIndex const q,
+  static real64 calcGradN( localIndex const q,
                                           real64 const (&X)[numNodes][3],
                                           real64 ( &dNdX )[numNodes][3] );
 
@@ -410,7 +410,7 @@ H1_Hexahedron_Lagrange1_GaussLegendre2::supportLoop( int const qa,
 GEOSX_HOST_DEVICE
 GEOSX_FORCE_INLINE
 real64
-H1_Hexahedron_Lagrange1_GaussLegendre2::shapeFunctionDerivatives( localIndex const q,
+H1_Hexahedron_Lagrange1_GaussLegendre2::calcGradN( localIndex const q,
                                                                   real64 const (&X)[numNodes][3],
                                                                   real64 (& dNdX)[numNodes][3] )
 {

@@ -74,7 +74,7 @@ public:
    *   point.
    */
   GEOSX_HOST_DEVICE
-  static void shapeFunctionValues( localIndex const q,
+  static void calcN( localIndex const q,
                                    real64 ( &N )[numNodes] );
 
   /**
@@ -87,7 +87,7 @@ public:
    * @return The determinant of the parent/physical transformation matrix.
    */
   GEOSX_HOST_DEVICE
-  static real64 shapeFunctionDerivatives( localIndex const q,
+  static real64 calcGradN( localIndex const q,
                                           real64 const (&X)[numNodes][3],
                                           real64 ( &dNdX )[numNodes][3] );
 
@@ -137,7 +137,7 @@ GEOSX_HOST_DEVICE
 GEOSX_FORCE_INLINE
 void
 H1_Tetrahedron_Lagrange1_Gauss1::
-  shapeFunctionValues( localIndex const q,
+  calcN( localIndex const q,
                        real64 (& N)[numNodes] )
 {
   GEOSX_UNUSED_VAR( q );
@@ -155,7 +155,7 @@ GEOSX_HOST_DEVICE
 GEOSX_FORCE_INLINE
 real64
 H1_Tetrahedron_Lagrange1_Gauss1::
-  shapeFunctionDerivatives( localIndex const q,
+  calcGradN( localIndex const q,
                             real64 const (&X)[numNodes][3],
                             real64 (& dNdX)[numNodes][3] )
 {

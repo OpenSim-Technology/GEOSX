@@ -871,16 +871,25 @@ localIndex Pack( buffer_unit_type * & buffer,
                  arraySlice1d< localIndex const, USD > const & var,
                  globalIndex const * const unmappedGlobalIndices,
                  localIndex const length,
-                 arraySlice1d< globalIndex const > const & localToGlobalMap )
+                 arraySlice1d< globalIndex const > const & localToGlobalMap,
+                 bool const log )
 {
   localIndex sizeOfPackedChars = Pack< DO_PACKING >( buffer, length );
   sizeOfPackedChars += length*sizeof(globalIndex);
+
+  if ( log )
+  {
+    GEOSX_LOG_RANK_VAR( length );
+    GEOSX_LOG_RANK_VAR( var.size() );
+    GEOSX_LOG_RANK_VAR( localToGlobalMap.size() );
+  }
 
   static_if( DO_PACKING )
   {
     globalIndex * const buffer_GI = reinterpret_cast< globalIndex * >(buffer);
     for( localIndex a=0; a<length; ++a )
     {
+      if ( log ) GEOSX_LOG_RANK( "a, var[ a ] = " << a << ", " << var[ a ] );
       if( var[a] != unmappedLocalIndexValue )
       {
         buffer_GI[ a ] = localToGlobalMap[var[a]];

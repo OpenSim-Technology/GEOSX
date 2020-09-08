@@ -345,7 +345,7 @@ public:
    * or modify the face normals in this FaceManager
    * @return a table containing all the face normals
    */
-  arrayView2d< real64 > faceNormal() { return m_faceNormal.toView(); }
+  array2d< real64 > const & faceNormal() { return m_faceNormal; }
 
   /**
    * @brief Get an immutable accessor to a table containing all the face normals.
@@ -354,7 +354,7 @@ public:
   arrayView2d< real64 const > faceNormal() const { return m_faceNormal.toViewConst(); }
 
   /**
-   * @brief Get an immutable accessor to a table containig all the face rotation matrix.
+   * @brief Get an immutable accessor to a table containing all the face rotation matrix.
    * @return constant reference to the list of all face rotation matrixes.
    */
   arrayView3d< real64 const > faceRotationMatrix() const { return m_faceRotationMatrix.toViewConst(); }

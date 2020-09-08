@@ -1629,7 +1629,7 @@ void SurfaceGenerator::PerformFracture( const localIndex nodeID,
   FaceElementRegion * const fractureElementRegion = elementManager.GetRegion< FaceElementRegion >( "Fracture" );
   integer_array & isFaceSeparable = faceManager.getReference< integer_array >( "isFaceSeparable" );
 
-  arrayView2d< real64 > const & faceNormals = faceManager.faceNormal();
+  array2d< real64 > const & faceNormals = faceManager.faceNormal();
 
   array1d< localIndex > const & parentEdgeIndices = edgeManager.getExtrinsicData< extrinsicMeshData::ParentIndex >();
   array1d< localIndex > const & childEdgeIndices = edgeManager.getExtrinsicData< extrinsicMeshData::ChildIndex >();

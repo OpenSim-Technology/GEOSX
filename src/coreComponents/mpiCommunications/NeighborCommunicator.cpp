@@ -432,40 +432,45 @@ void NeighborCommunicator::PrepareAndSendSyncLists( MeshLevel const & mesh,
   FaceManager const & faceManager = *(mesh.getFaceManager());
   ElementRegionManager const & elemManager = *(mesh.getElemManager());
 
-  arraySlice1d< localIndex const > const nodeGhostsToReceive = nodeManager.getNeighborData( m_neighborRank ).ghostsToReceive().toSliceConst();
-  arraySlice1d< localIndex const > const edgeGhostsToReceive = edgeManager.getNeighborData( m_neighborRank ).ghostsToReceive().toSliceConst();
-  arraySlice1d< localIndex const > const faceGhostsToReceive = faceManager.getNeighborData( m_neighborRank ).ghostsToReceive().toSliceConst();
+  arrayView1d< localIndex const > const nodeGhostsToReceive = nodeManager.getNeighborData( m_neighborRank ).ghostsToReceive();
+  arrayView1d< localIndex const > const edgeGhostsToReceive = edgeManager.getNeighborData( m_neighborRank ).ghostsToReceive();
+  arrayView1d< localIndex const > const faceGhostsToReceive = faceManager.getNeighborData( m_neighborRank ).ghostsToReceive();
+
+  arrayView1d< globalIndex const > const nodeLocalToGlobal = nodeManager.localToGlobalMap();
+  arrayView1d< globalIndex const > const edgeLocalToGlobal = edgeManager.localToGlobalMap();
+  arrayView1d< globalIndex const > const faceLocalToGlobal = faceManager.localToGlobalMap();
 
   buffer_type & sendBuffer = SendBuffer( commID );
   buffer_unit_type * sendBufferPtr = sendBuffer.data();
 
   int bufferSize = 0;
   bufferSize += bufferOps::Pack< false >( sendBufferPtr,
-                                          nodeGhostsToReceive,
+                                          nodeGhostsToReceive.toSliceConst(),
                                           nullptr,
                                           nodeGhostsToReceive.size(),
-                                          nodeManager.localToGlobalMap().toSliceConst() );
+                                          nodeLocalToGlobal.toSliceConst() );
 
   bufferSize += bufferOps::Pack< false >( sendBufferPtr,
-                                          edgeGhostsToReceive,
+                                          edgeGhostsToReceive.toSliceConst(),
                                           nullptr,
                                           edgeGhostsToReceive.size(),
-                                          edgeManager.localToGlobalMap().toSliceConst() );
+                                          edgeLocalToGlobal.toSliceConst() );
 
   bufferSize += bufferOps::Pack< false >( sendBufferPtr,
-                                          faceGhostsToReceive,
+                                          faceGhostsToReceive.toSliceConst(),
                                           nullptr,
                                           faceGhostsToReceive.size(),
-                                          faceManager.localToGlobalMap().toSliceConst() );
+                                          faceLocalToGlobal.toSliceConst() );
 
   elemManager.forElementSubRegions< ElementSubRegionBase >( [&]( ElementSubRegionBase const & subRegion )
   {
-    arraySlice1d< localIndex const > const ghostsToReceive = subRegion.getNeighborData( m_neighborRank ).ghostsToReceive().toSliceConst();
+    arrayView1d< localIndex const > const ghostsToReceive = subRegion.getNeighborData( m_neighborRank ).ghostsToReceive();
+    arrayView1d< globalIndex const > const localToGlobal = subRegion.localToGlobalMap();
     bufferSize += bufferOps::Pack< false >( sendBufferPtr,
-                                            ghostsToReceive,
+                                            ghostsToReceive.toSliceConst(),
                                             nullptr,
                                             ghostsToReceive.size(),
-                                            subRegion.localToGlobalMap().toSliceConst() );
+                                            localToGlobal.toSliceConst() );
   } );
 
   this->resizeSendBuffer( commID, bufferSize );
@@ -473,31 +478,32 @@ void NeighborCommunicator::PrepareAndSendSyncLists( MeshLevel const & mesh,
 
   int packedSize = 0;
   packedSize += bufferOps::Pack< true >( sendBufferPtr,
-                                         nodeGhostsToReceive,
+                                         nodeGhostsToReceive.toSliceConst(),
                                          nullptr,
                                          nodeGhostsToReceive.size(),
-                                         nodeManager.localToGlobalMap().toSliceConst() );
+                                         nodeLocalToGlobal.toSliceConst() );
 
   packedSize += bufferOps::Pack< true >( sendBufferPtr,
-                                         edgeGhostsToReceive,
+                                         edgeGhostsToReceive.toSliceConst(),
                                          nullptr,
                                          edgeGhostsToReceive.size(),
-                                         edgeManager.localToGlobalMap().toSliceConst() );
+                                         edgeLocalToGlobal.toSliceConst() );
 
   packedSize += bufferOps::Pack< true >( sendBufferPtr,
-                                         faceGhostsToReceive,
+                                         faceGhostsToReceive.toSliceConst(),
                                          nullptr,
                                          faceGhostsToReceive.size(),
-                                         faceManager.localToGlobalMap().toSliceConst() );
+                                         faceLocalToGlobal.toSliceConst() );
 
   elemManager.forElementSubRegions< ElementSubRegionBase >( [&]( ElementSubRegionBase const & subRegion )
   {
-    arraySlice1d< localIndex const > const ghostsToReceive = subRegion.getNeighborData( m_neighborRank ).ghostsToReceive().toSliceConst();
+    arrayView1d< localIndex const > const ghostsToReceive = subRegion.getNeighborData( m_neighborRank ).ghostsToReceive();
+    arrayView1d< globalIndex const > const localToGlobal = subRegion.localToGlobalMap();
     packedSize += bufferOps::Pack< true >( sendBufferPtr,
-                                           ghostsToReceive,
+                                           ghostsToReceive.toSliceConst(),
                                            nullptr,
                                            ghostsToReceive.size(),
-                                           subRegion.localToGlobalMap().toSliceConst() );
+                                           localToGlobal.toSliceConst() );
   } );
 
   GEOSX_ERROR_IF( bufferSize != packedSize, "Allocated Buffer Size is not equal to packed buffer size" );

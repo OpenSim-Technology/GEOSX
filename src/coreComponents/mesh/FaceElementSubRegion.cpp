@@ -166,32 +166,35 @@ template< bool DOPACK >
 localIndex FaceElementSubRegion::PackUpDownMapsPrivate( buffer_unit_type * & buffer,
                                                         arrayView1d< localIndex const > const & packList ) const
 {
-  localIndex packedSize = 0;
+  arrayView1d< globalIndex const > const localToGlobal = this->localToGlobalMap();
+  arrayView1d< globalIndex const > const nodeLocalToGlobal = m_toNodesRelation.RelatedObjectLocalToGlobal();
+  arrayView1d< globalIndex const > const edgeLocalToGlobal = m_toEdgesRelation.RelatedObjectLocalToGlobal();
+  arrayView1d< globalIndex const > const faceLocalToGlobal = m_toFacesRelation.RelatedObjectLocalToGlobal();
 
-  packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::nodeListString ) );
+  localIndex packedSize = bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::nodeListString ) );
 
   packedSize += bufferOps::Pack< DOPACK >( buffer,
                                            m_toNodesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToNodes,
                                            packList,
-                                           this->localToGlobalMap(),
-                                           m_toNodesRelation.RelatedObjectLocalToGlobal() );
+                                           localToGlobal,
+                                           nodeLocalToGlobal );
 
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::edgeListString ) );
   packedSize += bufferOps::Pack< DOPACK >( buffer,
                                            m_toEdgesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToEdges,
                                            packList,
-                                           this->localToGlobalMap(),
-                                           m_toEdgesRelation.RelatedObjectLocalToGlobal() );
+                                           localToGlobal,
+                                           edgeLocalToGlobal );
 
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::faceListString ) );
   packedSize += bufferOps::Pack< DOPACK >( buffer,
                                            m_toFacesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToFaces,
                                            packList,
-                                           this->localToGlobalMap().toSliceConst(),
-                                           m_toFacesRelation.RelatedObjectLocalToGlobal().toSliceConst() );
+                                           localToGlobal,
+                                           faceLocalToGlobal );
 
 
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::faceElementsToCellRegionsString ) );

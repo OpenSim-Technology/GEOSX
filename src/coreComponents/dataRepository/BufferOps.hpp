@@ -430,7 +430,8 @@ Pack( buffer_unit_type * & buffer,
       arraySlice1d< localIndex const, USD > const & var,
       globalIndex const * const unmappedGlobalIndices,
       localIndex const length,
-      arraySlice1d< globalIndex const > const & localToGlobalMap );
+      arraySlice1d< globalIndex const > const & localToGlobalMap,
+      bool const log=false );
 
 //------------------------------------------------------------------------------
 template< typename SORTED >

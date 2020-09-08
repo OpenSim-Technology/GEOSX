@@ -782,15 +782,17 @@ template< bool DOPACK >
 localIndex EdgeManager::PackUpDownMapsPrivate( buffer_unit_type * & buffer,
                                                arrayView1d< localIndex const > const & packList ) const
 {
-  localIndex packedSize = 0;
+  arrayView1d< globalIndex const > const localToGlobal = localToGlobalMap();
+  arrayView1d< globalIndex const > nodeLocalToGlobal = nodeList().RelatedObjectLocalToGlobal();
+  arrayView1d< globalIndex const > faceLocalToGlobal = faceList().RelatedObjectLocalToGlobal();
 
-  packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::nodeListString ) );
+  localIndex packedSize = bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::nodeListString ) );
   packedSize += bufferOps::Pack< DOPACK >( buffer,
                                            m_toNodesRelation.Base().toViewConst(),
                                            m_unmappedGlobalIndicesInToNodes,
                                            packList,
-                                           localToGlobalMap().toSliceConst(),
-                                           m_toNodesRelation.RelatedObjectLocalToGlobal().toSliceConst() );
+                                           localToGlobal,
+                                           nodeLocalToGlobal );
 
 
   packedSize += bufferOps::Pack< DOPACK >( buffer, string( viewKeyStruct::faceListString ) );
@@ -798,8 +800,8 @@ localIndex EdgeManager::PackUpDownMapsPrivate( buffer_unit_type * & buffer,
                                            m_toFacesRelation.Base().toArrayOfArraysView(),
                                            m_unmappedGlobalIndicesInToFaces,
                                            packList,
-                                           localToGlobalMap().toViewConst(),
-                                           m_toFacesRelation.RelatedObjectLocalToGlobal().toViewConst() );
+                                           localToGlobal,
+                                           faceLocalToGlobal );
 
   return packedSize;
 }

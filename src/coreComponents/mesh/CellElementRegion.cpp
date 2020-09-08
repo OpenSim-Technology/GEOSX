@@ -159,6 +159,8 @@ void CellElementRegion::GenerateAggregates( FaceManager const * const faceManage
   {
     arrayView1d< integer const > const ghostRank = elementSubRegion.ghostRank().toViewConst();
     localIndex const subRegionIndex = elementSubRegion.getIndexInParent();
+    arrayView2d< real64 const > const elemCenter = elementSubRegion.getElementCenter();
+
     for( localIndex cellIndex = 0; cellIndex< elementSubRegion.size(); cellIndex++ )
     {
       if( ghostRank[cellIndex] >= 0 )
@@ -167,10 +169,10 @@ void CellElementRegion::GenerateAggregates( FaceManager const * const faceManage
       // TODO Change the rest of this to
       // LvArray::tensorOps::scaledAdd< 3 >( aggregateBarycenters[ parts[ cellIndex + offsetSubRegions[ subRegionIndex ]
       // ] ],
-      //                                     elementSubRegion.getElementCenter()[ cellIndex ],
+      //                                     elemCenter[ cellIndex ],
       //                                     normalizeVolumes[ cellIndex + offsetSubRegions[ subRegionIndex ] ] )
       real64 const center[ 3 ] =
-        LVARRAY_TENSOROPS_INIT_LOCAL_3( normalizeVolumes[ cellIndex + offsetSubRegions[ subRegionIndex ] ] * elementSubRegion.getElementCenter()[ cellIndex ] );
+        LVARRAY_TENSOROPS_INIT_LOCAL_3( normalizeVolumes[ cellIndex + offsetSubRegions[ subRegionIndex ] ] * elemCenter[ cellIndex ] );
       aggregateBarycenters[ parts[ cellIndex + offsetSubRegions[ subRegionIndex ] ] ][ 0 ] += center[ 0 ];
       aggregateBarycenters[ parts[ cellIndex + offsetSubRegions[ subRegionIndex ] ] ][ 1 ] += center[ 1 ];
       aggregateBarycenters[ parts[ cellIndex + offsetSubRegions[ subRegionIndex ] ] ][ 2 ] += center[ 2 ];

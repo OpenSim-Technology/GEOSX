@@ -701,8 +701,9 @@ void FaceManager::SortAllFaceNodes( NodeManager const * const nodeManager,
   {
     ElementRegionBase const * const elemRegion = elemManager->GetRegion( elemRegionList[kf][0] );
     CellElementSubRegion const * const subRegion = elemRegion->GetSubRegion< CellElementSubRegion >( elemSubRegionList[kf][0] );
-    const localIndex numFaceNodes = faceToNodeMap.sizeOfArray( kf );
-    SortFaceNodes( X, subRegion->getElementCenter()[ elemList( kf, 0 ) ], faceToNodeMap[ kf ], numFaceNodes );
+    localIndex const numFaceNodes = faceToNodeMap.sizeOfArray( kf );
+    arrayView2d< real64 const > const elemCenter = subRegion->getElementCenter();
+    SortFaceNodes( X, elemCenter[ elemList( kf, 0 ) ], faceToNodeMap[ kf ], numFaceNodes );
   } );
 }
 

@@ -2088,15 +2088,16 @@ void SurfaceGenerator::PerformFracture( const localIndex nodeID,
             localIndex elementIndex = faceToElementMap[iFace][0];
             CellElementSubRegion * elementSubRegion = elementManager.GetRegion( faceToRegionMap[iFace][0] )->
                                                         GetSubRegion< CellElementSubRegion >( faceToSubRegionMap[iFace][0] );
+            arrayView2d< real64 const > const subRegionElemCenter = elementSubRegion->getElementCenter();
 
-            faceManager.SortFaceNodes( X, elementSubRegion->getElementCenter()[elementIndex], faceToNodeMap[iFace], faceToNodeMap.sizeOfArray( iFace ) );
+            faceManager.SortFaceNodes( X, subRegionElemCenter[ elementIndex ], faceToNodeMap[ iFace ], faceToNodeMap.sizeOfArray( iFace ) );
 
             //Face normal need to be updated here
             real64 fCenter[ 3 ];
-            computationalGeometry::Centroid_3DPolygon( faceToNodeMap[iFace],
+            computationalGeometry::Centroid_3DPolygon( faceToNodeMap[ iFace ],
                                                        X,
                                                        fCenter,
-                                                       faceNormals[iFace] );
+                                                       faceNormals[ iFace ] );
           }
 
         } // if( splitFaces.count( faceID ) > 0 )

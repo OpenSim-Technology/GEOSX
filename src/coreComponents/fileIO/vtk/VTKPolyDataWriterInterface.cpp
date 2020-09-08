@@ -120,21 +120,26 @@ std::pair< vtkSmartPointer< vtkPoints >, vtkSmartPointer< vtkCellArray > >VTKPol
   localIndex numberOfNodesPerElement = esr.numNodesPerElement();
   GEOSX_ERROR_IF_NE( numberOfNodesPerElement, 2 );
   std::vector< vtkIdType > connectivity( numberOfNodesPerElement );
+
+  arrayView2d< real64 const, nodes::REFERENCE_POSITION_USD > const referencePosition = nodeManager.referencePosition();
+
   for( localIndex edge = 0; edge < esr.size(); edge++ )
   {
     localIndex firstPoint = esr.nodeList()[edge][0];
-    auto point = nodeManager.referencePosition()[firstPoint];
+    auto point = referencePosition[firstPoint];
     points->SetPoint( edge, point[0], point[1], point[2] );
     connectivity[0] = edge;
     connectivity[1] = edge+1; // We can do that because of the pattern in which the wells are stored
     cellsArray->InsertNextCell( numberOfNodesPerElement, connectivity.data() );
   }
+
   if( esr.size() > 0 )
   {
     localIndex lastPoint = esr.nodeList()[ esr.size() -1  ][1];
-    auto point = nodeManager.referencePosition()[lastPoint];
+    auto point = referencePosition[lastPoint];
     points->SetPoint( esr.size(), point[0], point[1], point[2] );
   }
+
   return std::make_pair( points, cellsArray );
 }
 std::pair< vtkSmartPointer< vtkPoints >, vtkSmartPointer< vtkCellArray > >VTKPolyDataWriterInterface::GetSurface( FaceElementSubRegion const & esr,
@@ -149,6 +154,7 @@ std::pair< vtkSmartPointer< vtkPoints >, vtkSmartPointer< vtkCellArray > >VTKPol
   localIndex nodeIndexInVTK = 0;
   std::vector< vtkIdType > connectivity( esr.numNodesPerElement() );
   std::vector< int >  vtkOrdering = esr.getVTKNodeOrdering();
+
   for( localIndex ei = 0; ei < esr.size(); ei++ )
   {
     auto const & elem = nodeListPerElement[ei];
@@ -169,11 +175,14 @@ std::pair< vtkSmartPointer< vtkPoints >, vtkSmartPointer< vtkCellArray > >VTKPol
 
   vtkSmartPointer< vtkPoints > points = vtkPoints::New();
   points->SetNumberOfPoints( geosx2VTKIndexing.size() );
+  arrayView2d< real64 const, nodes::REFERENCE_POSITION_USD > const referencePosition = nodeManager.referencePosition();
+  
   for( auto nodeIndex: geosx2VTKIndexing )
   {
-    auto point = nodeManager.referencePosition()[nodeIndex.first];
+    auto point = referencePosition[nodeIndex.first];
     points->SetPoint( nodeIndex.second, point[0], point[1], point[2] );
   }
+
   return std::make_pair( points, cellsArray );
 }
 std::pair< vtkSmartPointer< vtkPoints >, vtkSmartPointer< vtkCellArray > > VTKPolyDataWriterInterface::GetEmbeddedSurface( EmbeddedSurfaceSubRegion const & esr,
